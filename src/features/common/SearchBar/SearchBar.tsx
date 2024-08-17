@@ -22,9 +22,9 @@ export const SearchBar: React.FC = () => {
   const resultsAnnouncementsData = useAppSelector(selectAnnouncementsData)
 
   // Load announcements data on page load
-  useEffect(() => {
-    dispatch(fetchAnnouncements())
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(fetchAnnouncements())
+  // }, [dispatch])
 
   if (resultsAnnouncementsLoading) {
     return <Loader fullscreen={true} />

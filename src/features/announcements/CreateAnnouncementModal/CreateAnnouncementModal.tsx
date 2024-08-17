@@ -19,6 +19,7 @@ import { selectInterestAreasOptions, selectInterestAreasOptionsLoading, selectUs
 import { fetchInterestAreasOptions } from '../../account/actions'
 import { LoadingOverlay } from '../../common/LoadingOverlay'
 import { addAnnouncement, updateAnnouncement } from '../actions'
+import AddIcon from '@mui/icons-material/Add'
 
 export type CreateAnnouncementType = {
   id: number
@@ -44,6 +45,7 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
   const dispatch = useAppDispatch()
   const [listOfInterestAreas, setListOfInterestAreas] = useState<string[]>([])
   const [areasId, setInterestAreasId] = useState<number | null>(null)
+  const [interestAreaModelIsOpen, setInterestAreaModelIsOpen] = useState<boolean>(false)
 
   const formMethods = useForm<CreateAnnouncementType>()
   const {
@@ -93,9 +95,9 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
   }
 
   useEffect(() => {
-    if (!interestAreasOptions) dispatch(fetchInterestAreasOptions())
+    if (!interestAreasOptions && isOpened) dispatch(fetchInterestAreasOptions())
     setInterestAreas()
-  }, [dispatch, interestAreasOptions])
+  }, [isOpened, interestAreasOptions])
 
   const handleAssignmentSubmit: SubmitHandler<CreateAnnouncementType> = async formData => {
     getInterestAreaId(formData.interestArea)
@@ -177,24 +179,29 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
                 price.onChange(newPrice.target.value)
               }}
             />
-            <Autocomplete
-              options={listOfInterestAreas || []}
-              filterSelectedOptions
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  helperText={errors.interestArea?.message}
-                  error={!!errors.interestArea?.message}
-                  color="secondary"
-                  InputLabelProps={{ shrink: true }}
-                  label="Interest area"
-                />
-              )}
-              onChange={(_, newInterestArea) => {
-                clearErrors('interestArea')
-                interestArea.onChange(newInterestArea, { shouldDirty: true })
-              }}
-            />
+            <InterestAreaWrapper>
+              <Autocomplete
+                options={listOfInterestAreas || []}
+                filterSelectedOptions
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    helperText={errors.interestArea?.message}
+                    error={!!errors.interestArea?.message}
+                    color="secondary"
+                    InputLabelProps={{ shrink: true }}
+                    label="Interest area"
+                  />
+                )}
+                onChange={(_, newInterestArea) => {
+                  clearErrors('interestArea')
+                  interestArea.onChange(newInterestArea, { shouldDirty: true })
+                }}
+              />
+              <CreateInterestAreaButton onClick={() => setInterestAreaModelIsOpen(true)}>
+                <AddIcon />
+              </CreateInterestAreaButton>
+            </InterestAreaWrapper>
             <FormInput
               label="Description"
               fieldName="description"
@@ -239,4 +246,28 @@ const StyledDialogContent = styled(DialogContent)`
 
 const DialogInstructions = styled(DialogContentText)`
   margin-bottom: 15px;
+`
+
+const InterestAreaWrapper = styled('div')`
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+`
+
+const CreateInterestAreaButton = styled('div')`
+  // padding: 30px;
+  // width: 500px;
+  color: #f7941d;
+  border: 1px solid #f7941d;
+  border-radius: 4px;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  // gap: 5px;
+  font-size: 10px;
 `

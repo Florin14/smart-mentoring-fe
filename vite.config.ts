@@ -13,8 +13,8 @@ export default defineConfig({
       },
     },
     hmr: {
-      port: 443,
-      clientPort: 443,
+      port: 24678,
+      clientPort: 24678,
     },
     port: 3000,
   },

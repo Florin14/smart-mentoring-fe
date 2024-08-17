@@ -3,6 +3,7 @@ import { axiosInstance } from '../../api'
 import { AxiosResponse } from 'axios'
 import { Response } from '../../types/Response'
 import { ProfileSubmitType } from './ProfilePage'
+import { InterestAreaRequestDto } from '../../types/InterestAreas'
 
 export const fetchUserCall = async (): Promise<AxiosResponse<Response<UserDto>>> => axiosInstance.get('/users/profile')
 
@@ -17,3 +18,7 @@ export const fetchCompletedStudiesOptionsCall = async (): Promise<AxiosResponse<
 
 export const fetchInterestAreasOptionsCall = async (): Promise<AxiosResponse<Response<InterestArea[]>>> =>
   axiosInstance.get('/interest-areas')
+
+export const createInterestAreaCall = async (
+  interestArea: InterestAreaRequestDto
+): Promise<AxiosResponse<InterestAreaRequestDto>> => axiosInstance.post('/interest-areas', interestArea)

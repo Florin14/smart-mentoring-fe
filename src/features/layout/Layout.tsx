@@ -12,7 +12,7 @@ import { NavBar } from '../common/Navbar'
 
 export const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
-  const isAuthenticated = !!localStorage.getItem('jwtToken')
+  const isAuthenticated = !!localStorage.getItem('user')
   const userData = useAppSelector(selectUserData)
 
   useEffect(() => {

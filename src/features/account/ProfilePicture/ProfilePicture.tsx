@@ -4,15 +4,23 @@ import { useFormContext } from 'react-hook-form'
 import { initialPictureURL } from '../utils'
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import { updateUserData } from '../actions'
+import { useAppDispatch } from '../../../redux/hooks'
 
-export const ProfilePicture: React.FC = () => {
+
+export const ProfilePicture: React.FC = ({  }) => {
   const { setValue, watch } = useFormContext()
-
+  const dispatch = useAppDispatch()
   const pictureRef = useRef<HTMLInputElement>(null)
 
   const handlePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const imageFile: File = e.target.files[0]
+      const submittedData = {
+        profilePicture: imageFile,
+      }
+  
+      dispatch(updateUserData(submittedData))
       setValue('profilePicture', imageFile, { shouldDirty: true })
     }
   }

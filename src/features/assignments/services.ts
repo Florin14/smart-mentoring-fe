@@ -11,8 +11,8 @@ type mockAxiosResponse<T> = {
 
 const mockAssignmentResponse: mockAxiosResponse<Response<AssignmentResponseDto[]>> = {
   data: {
-    value: mockAssignments,
-    errorMessage: undefined,
+    data: mockAssignments,
+    error: undefined,
   },
 }
 

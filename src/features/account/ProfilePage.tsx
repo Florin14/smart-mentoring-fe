@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Autocomplete, Button, css, styled, Tab, Tabs, TextField, Typography } from '@mui/material'
 import { UserDto } from '../../types/User'
 import { SubmitHandler, useForm, FormProvider, useController } from 'react-hook-form'
@@ -19,7 +19,7 @@ import {
 import { FormInput, ReadOnlyFormInput } from '../common/FormInput'
 import { ProfilePicture } from './ProfilePicture'
 import { Section, useSectionScroll } from './hooks'
-import { fetchCompletedStudiesOptions, fetchInterestAreasOptions, updateUserData } from './actions'
+import { fetchCompletedStudiesOptions, fetchInterestAreasOptions, fetchUserData, updateUserData } from './actions'
 
 export type ProfileFormType = Omit<UserDto, 'email' | 'role' | 'profilePicture'> & {
   profilePicture?: File
@@ -31,8 +31,8 @@ export type ProfileSubmitType = Omit<
   'email' | 'role' | 'profilePicture' | 'completedStudies' | 'interestAreas'
 > & {
   profilePicture?: File
-  completedStudyIds: number[]
-  interestAreaIds: number[]
+  completedStudyIds?: number[]
+  interestAreaIds?: number[]
   ongoingStudyId?: number
   password?: string
 }
@@ -61,29 +61,42 @@ const ProfilePage: React.FC = () => {
 
   const interestAreasOptions = useAppSelector(selectInterestAreasOptions)
   const interestAreasOptionsLoading = useAppSelector(selectInterestAreasOptionsLoading)
+  const [init, setInit] = useState<boolean>(false)
+
+  // useEffect(() => {
+  //   if (!init) {
+  //     dispatch(fetchUserData())
+  //     setInit(true)
+  //     console.log(23432)
+  //   }
+  //   // dispatch(fetchUserAvatar())
+  // }, [init])
 
   // Load Completed Studies Options
-  useEffect(() => {
-    dispatch(fetchCompletedStudiesOptions())
-    dispatch(fetchInterestAreasOptions())
-  }, [])
+  // useEffect(() => {
+  //   if (!init) {
+  // dispatch(fetchCompletedStudiesOptions())
+  // dispatch(fetchInterestAreasOptions())
+  //     setInit(true)
+  //   }
+  // }, [init])
 
   // Load fields with existing data
-  useEffect(() => {
-    if (userData) {
-      for (const [key, value] of Object.entries(userData)) {
-        setValue(key as keyof ProfileFormType, value, { shouldDirty: false })
-      }
-    }
-  }, [userData])
+  // useEffect(() => {
+  //   if (userData) {
+  //     for (const [key, value] of Object.entries(userData)) {
+  //       setValue(key as keyof ProfileFormType, value, { shouldDirty: false })
+  //     }
+  //   }
+  // }, [userData])
 
   // Load the user profile picture
-  useEffect(() => {
-    if (userAvatar) {
-      const userAvatarObject = new File([userAvatar], 'profilePicture.jpg')
-      setValue('profilePicture', userAvatarObject, { shouldDirty: false })
-    }
-  }, [userAvatar])
+  // useEffect(() => {
+  //   if (userAvatar) {
+  //     const userAvatarObject = new File([userAvatar], 'profilePicture.jpg')
+  //     setValue('profilePicture', userAvatarObject, { shouldDirty: false })
+  //   }
+  // }, [userAvatar])
 
   const handleSaveProfile: SubmitHandler<ProfileFormType> = formData => {
     // IMPORTANT: Interest areas and fields that contain a list of strings should be handled here separately

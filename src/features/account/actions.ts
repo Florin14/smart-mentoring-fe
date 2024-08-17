@@ -11,7 +11,7 @@ import { ProfileSubmitType } from './ProfilePage'
 export const fetchUserData = createAsyncThunk('fetchUserData', async () => {
   const response = await fetchUserCall()
 
-  return response.data.value
+  return response.data.data
 })
 
 export const updateUserData = createAsyncThunk(
@@ -19,10 +19,18 @@ export const updateUserData = createAsyncThunk(
   async (usersFormData: ProfileSubmitType, { dispatch }) => {
     const response = await updateUserCall(usersFormData)
 
-    // re-fetch data after updating so it will persist locally
     dispatch(fetchUserAvatar())
 
-    return response.data.value
+    return response.data.data
+  }
+)
+
+export const updateUserAvatar = createAsyncThunk(
+  'updateUserAvatar',
+  async (usersFormData: ProfileSubmitType,) => {
+    const response = await updateUserCall(usersFormData)
+
+    return response.data.data
   }
 )
 
@@ -35,11 +43,11 @@ export const fetchUserAvatar = createAsyncThunk('fetchUserAvatar', async () => {
 export const fetchCompletedStudiesOptions = createAsyncThunk('fetchCompletedStudiesOptions', async () => {
   const response = await fetchCompletedStudiesOptionsCall()
 
-  return response.data.value
+  return response.data.data
 })
 
 export const fetchInterestAreasOptions = createAsyncThunk('fetchInterestAreasOptions', async () => {
   const response = await fetchInterestAreasOptionsCall()
 
-  return response.data.value
+  return response.data.data
 })

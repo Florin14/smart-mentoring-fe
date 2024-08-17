@@ -64,9 +64,11 @@ export const NavBar: React.FC = () => {
           <SearchBar />
           <RightSection>
             <Tooltip title="Notifications">
-              <StyledIconButton size="large" disabled>
-                <NotificationsIcon />
-              </StyledIconButton>
+              <span>
+                <StyledIconButton size="large" disabled>
+                  <NotificationsIcon />
+                </StyledIconButton>
+              </span>
             </Tooltip>
             <Tooltip title="Messages">
               <div ref={menuRef}>
