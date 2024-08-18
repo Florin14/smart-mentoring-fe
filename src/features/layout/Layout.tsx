@@ -1,16 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { LoadingScreen } from '../application/utils'
-import { useAppDispatch } from '../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { displaySnackbar } from '../application/slice'
 import { styled } from '@mui/material'
 import { Sidebar } from '../common/Sidebar'
 import { paths } from '../../api'
 import { NavBar } from '../common/Navbar'
+import { selectUserData } from '../account/selectors'
+import { fetchUserData } from '../account/actions'
 
 export const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
   const isAuthenticated = !!localStorage.getItem('user')
+
+  const userData = useAppSelector(selectUserData)
+  useEffect(() => {
+    if(!userData) {
+      dispatch(fetchUserData())
+    }
+
+  }, [userData])
 
   if (!isAuthenticated) {
     dispatch(

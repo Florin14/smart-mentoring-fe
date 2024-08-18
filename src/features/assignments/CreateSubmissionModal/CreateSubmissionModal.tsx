@@ -31,7 +31,7 @@ interface CreateSubmissionModalProps {
 export const CreateSubmissionModal: React.FC<CreateSubmissionModalProps> = ({ isOpened, handleClose, assignment }) => {
   const dispatch = useAppDispatch()
   const userData = useAppSelector(selectUserData)
-  const role = userData?.role
+  const role = localStorage.getItem('authorities')
 
   const [currentSubmission, setCurrentSubmission] = useState<Submission>({
     studentId: userData?.id || 0,

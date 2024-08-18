@@ -3,7 +3,7 @@ import { axiosInstance } from '../../api'
 import { AxiosResponse } from 'axios'
 import { Response } from '../../types/Response'
 import { ProfileSubmitType } from './ProfilePage'
-import { InterestAreaRequestDto } from '../../types/InterestAreas'
+import { InterestAreaRequestDto, InterestAreasResponseDTO, UpdateInterestAreaRequestDto } from '../../types/InterestAreas'
 
 export const fetchUserCall = async (): Promise<AxiosResponse<Response<UserDto>>> => axiosInstance.get('/users/profile')
 
@@ -21,4 +21,8 @@ export const fetchInterestAreasOptionsCall = async (): Promise<AxiosResponse<Res
 
 export const createInterestAreaCall = async (
   interestArea: InterestAreaRequestDto
-): Promise<AxiosResponse<InterestAreaRequestDto>> => axiosInstance.post('/interest-areas', interestArea)
+): Promise<AxiosResponse<InterestAreasResponseDTO>> => axiosInstance.post('/interest-areas', interestArea)
+
+
+export const updateInterestAreaCall = async (intArea: UpdateInterestAreaRequestDto): Promise<AxiosResponse<InterestAreasResponseDTO>> =>
+  axiosInstance.put(`/interest-areas/${intArea.id}`, intArea)

@@ -34,7 +34,7 @@ export enum AssignmentCategory {
 const AssignmentsPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const userData = useAppSelector(selectUserData)
-  const role = userData?.role
+  const role = localStorage.getItem('authorities')
   const userId = userData?.id
 
   const assignmentsLoading = useAppSelector(selectAssignmentsLoading)

@@ -1,13 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import {
+  createInterestAreaCall,
   fetchCompletedStudiesOptionsCall,
   fetchInterestAreasOptionsCall,
   fetchUserAvatarCall,
   fetchUserCall,
+  updateInterestAreaCall,
   updateUserCall,
 } from './services'
 import { ProfileSubmitType } from './ProfilePage'
 import { updateAvatar } from './slice'
+import { InterestArea } from '../../types/User'
+import { InterestAreaRequestDto, UpdateInterestAreaRequestDto } from '../../types/InterestAreas'
 
 export const fetchUserData = createAsyncThunk('fetchUserData', async () => {
   const response = await fetchUserCall()
@@ -51,4 +55,16 @@ export const fetchInterestAreasOptions = createAsyncThunk('fetchInterestAreasOpt
   const response = await fetchInterestAreasOptionsCall()
 
   return response.data.data
+})
+
+export const addInterestArea = createAsyncThunk('addInterestArea', async (interestArea: InterestAreaRequestDto) => {
+  const response = await createInterestAreaCall(interestArea)
+
+  return response.data
+})
+
+export const updateInterestArea = createAsyncThunk('updateInterestArea', async (interestArea: UpdateInterestAreaRequestDto) => {
+  const response = await updateInterestAreaCall(interestArea)
+
+  return response.data
 })

@@ -49,7 +49,7 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
 }) => {
   const dispatch = useAppDispatch()
   const userData = useAppSelector(selectUserData)
-  const role = userData?.role
+  const role = localStorage.getItem('authorities')
   // const now = dayjs()
 
   const formMethods = useForm<CreateAssignmentType>()

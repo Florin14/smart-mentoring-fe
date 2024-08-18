@@ -5,14 +5,12 @@ import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText, styled, T
 
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled'
 import { selectAppointmentsData } from './selectors'
-import { selectUserData } from '../account/selectors'
 import { Role } from '../../types/User'
 import AddIcon from '@mui/icons-material/Add'
 
 const AppointmentsPage: React.FC = () => {
   const dispatch = useAppDispatch()
-  const userData = useAppSelector(selectUserData)
-  const role = userData?.role
+  const role = localStorage.getItem('authorities')
 
   const appointments = useAppSelector(selectAppointmentsData)
 

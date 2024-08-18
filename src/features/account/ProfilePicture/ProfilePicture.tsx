@@ -18,7 +18,7 @@ export const ProfilePicture: React.FC = () => {
       const imageFile = e.target.files[0]
 
       const submittedData = {
-        profilePicture: imageFile,
+        avatar: imageFile,
       }
 
       dispatch(updateUserData(submittedData))

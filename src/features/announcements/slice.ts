@@ -39,7 +39,11 @@ const initialState: AnnouncementsState = {
 export const announcementsSlice = createSlice({
   name: 'assignmentsState',
   initialState,
-  reducers: {},
+  reducers: {
+    deleteAnnouncementItem: (state, action: PayloadAction<number>) => {
+      state.announcementsData = state.announcementsData.filter((ann) => ann.id === action.payload)
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchAnnouncements.rejected, state => {
@@ -106,5 +110,7 @@ export const announcementsSlice = createSlice({
       })
   },
 })
+
+export const { deleteAnnouncementItem } = announcementsSlice.actions
 
 export default announcementsSlice.reducer

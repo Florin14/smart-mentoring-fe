@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, FormProvider, useController, useForm } from 'react-hook-form'
-import { Role } from '../../../types/User'
+import { InterestArea, Role } from '../../../types/User'
 import { FormInput } from '../../common/FormInput'
 import { AnnouncementDto } from '../../../types/Announcements'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
@@ -20,11 +20,12 @@ import { fetchInterestAreasOptions } from '../../account/actions'
 import { LoadingOverlay } from '../../common/LoadingOverlay'
 import { addAnnouncement, updateAnnouncement } from '../actions'
 import AddIcon from '@mui/icons-material/Add'
+import { CreateInterestAreaModal } from '../CreateInterestAreaModal'
 
 export type CreateAnnouncementType = {
   id: number
   title: string
-  interestArea: string
+  interestArea: InterestArea
   description: string
   price: number
 }
@@ -41,10 +42,8 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
   announcement,
 }) => {
   const userData = useAppSelector(selectUserData)
-  const role = userData?.role
+  const role = localStorage.getItem('authorities')
   const dispatch = useAppDispatch()
-  const [listOfInterestAreas, setListOfInterestAreas] = useState<string[]>([])
-  const [areasId, setInterestAreasId] = useState<number | null>(null)
   const [interestAreaModelIsOpen, setInterestAreaModelIsOpen] = useState<boolean>(false)
 
   const formMethods = useForm<CreateAnnouncementType>()
@@ -71,68 +70,65 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
   const editMode = !!announcement
 
   useEffect(() => {
-    // Fill with pre-existing data when updating
     if (announcement) {
       setValue('title', announcement.title)
       setValue('price', announcement.price)
-      setValue('interestArea', announcement.interestAreas.name)
+      setValue('interestArea', announcement.interestAreas)
       setValue('description', announcement.description)
     }
   }, [announcement])
 
-  const setInterestAreas = () => {
-    const interestAreaNames: string[] = []
-    interestAreasOptions?.map(interestArea => {
-      interestAreaNames.push(interestArea.name)
-    })
-    interestAreaNames && setListOfInterestAreas(interestAreaNames)
-  }
-
-  const getInterestAreaId = (name: string) => {
-    interestAreasOptions?.map(area => {
-      area.name === name && setInterestAreasId(area.id)
-    })
-  }
-
   useEffect(() => {
-    if (!interestAreasOptions && isOpened) dispatch(fetchInterestAreasOptions())
-    setInterestAreas()
-  }, [isOpened, interestAreasOptions])
+    if (isOpened) dispatch(fetchInterestAreasOptions())
+  }, [isOpened])
 
-  const handleAssignmentSubmit: SubmitHandler<CreateAnnouncementType> = async formData => {
-    getInterestAreaId(formData.interestArea)
-    if (areasId && userData && !editMode) {
+  console.log(userData)
+
+  const handleAnnouncementSubmit: SubmitHandler<CreateAnnouncementType> = async formData => {
+    console.log({
+      interestAreasId: formData.interestArea.id,
+      userId: userData?.id,
+      title: formData.title,
+      price: formData.price,
+      description: formData.description,
+    })
+    if (!editMode) {
       dispatch(
         addAnnouncement({
-          interestAreasId: areasId,
+          interestAreasId: formData.interestArea.id,
           userId: userData?.id,
           title: formData.title,
           price: formData.price,
           description: formData.description,
         })
-      )
-    }
-
-    if (areasId && userData && editMode) {
+      ).then(res => {
+        if (res?.meta?.requestStatus === 'fulfilled') {
+          handleClose()
+        }
+      })
+    } else {
       dispatch(
         updateAnnouncement({
           id: announcement.id,
-          interestAreasId: areasId,
+          interestAreasId: formData.interestArea.id,
           userId: userData?.id,
           title: formData.title,
           price: formData.price,
           description: formData.description,
         })
-      )
+      ).then(res => {
+        if (res?.meta?.requestStatus === 'fulfilled') {
+          handleClose()
+        }
+      })
     }
-    handleClose()
   }
 
   const handleCloseModal = () => {
     reset({
       title: '',
       description: '',
-      interestArea: '',
+      interestArea: undefined,
       price: undefined,
     })
     handleClose()
@@ -146,7 +142,7 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
       <LoadingOverlay visible={interestAreasOptionsLoading} />
       <StyledDialogTitle>{editMode ? 'Update' : 'Create'} Announcement</StyledDialogTitle>
       <FormProvider {...formMethods}>
-        <FormWrapper onSubmit={handleSubmit(handleAssignmentSubmit)}>
+        <FormWrapper onSubmit={handleSubmit(handleAnnouncementSubmit)}>
           <StyledDialogContent>
             <DialogInstructions>
               Fill in the details for {editMode ? 'this' : 'the new'} announcement
@@ -181,7 +177,7 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
             />
             <InterestAreaWrapper>
               <Autocomplete
-                options={listOfInterestAreas || []}
+                options={interestAreasOptions || []}
                 filterSelectedOptions
                 renderInput={params => (
                   <TextField
@@ -193,6 +189,8 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
                     label="Interest area"
                   />
                 )}
+                isOptionEqualToValue={(o, v) => (o?.id && v?.id ? o?.id === v?.id : o === v)}
+                getOptionLabel={option => option?.name?.toString() || ''}
                 onChange={(_, newInterestArea) => {
                   clearErrors('interestArea')
                   interestArea.onChange(newInterestArea, { shouldDirty: true })
@@ -225,6 +223,12 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
           </DialogActions>
         </FormWrapper>
       </FormProvider>
+      <CreateInterestAreaModal
+        isOpened={interestAreaModelIsOpen}
+        handleClose={() => {
+          setInterestAreaModelIsOpen(false)
+        }}
+      />
     </Dialog>
   )
 }

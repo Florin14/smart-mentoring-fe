@@ -11,7 +11,7 @@ export const fetchFilterAnnouncementsCall = async (text: string): Promise<AxiosR
 export const deleteAnnouncementsCall = async (id: number) => axiosInstance.delete(`/announcements/${id}`)
 
 export const addAnnouncementCall = async (ann: Submission): Promise<AxiosResponse<AnnouncementDto>> =>
-  axiosInstance.post('/announcements/', ann)
+  axiosInstance.post('/announcements', ann)
 
 export const updateAnnouncementCall = async (ann: UpdateSubmission): Promise<AxiosResponse<AnnouncementDto>> =>
   axiosInstance.put(`/announcements/${ann.id}`, ann)

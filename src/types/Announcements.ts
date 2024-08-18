@@ -1,14 +1,10 @@
 import { Dayjs } from 'dayjs'
+import { InterestAreasResponseDTO } from './InterestAreas'
 
 export interface AnnouncementUserResponseDTO {
   id: number
   fullName: string
-  profilePicture: string
-}
-
-export interface InterestAreasResponseDTO {
-  id: number
-  name: string
+  avatar: string
 }
 
 export interface Announcement {

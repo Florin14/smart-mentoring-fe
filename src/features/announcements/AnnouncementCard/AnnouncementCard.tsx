@@ -5,12 +5,12 @@ import RelativeTime from 'dayjs/plugin/relativeTime'
 import { alpha, Avatar, Button, IconButton, styled, Tooltip, Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { AnnouncementUserResponseDTO, InterestAreasResponseDTO } from '../../../types/Announcements'
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { selectUserData } from '../../account/selectors'
+import { AnnouncementUserResponseDTO } from '../../../types/Announcements'
+import { useAppDispatch } from '../../../redux/hooks'
 import { displaySnackbar } from '../../application/slice'
 import { AnnouncementCategory } from '../AnnouncementsPage'
 import { fetchAnnouncements, deleteAnnouncement } from '../actions'
+import { InterestAreasResponseDTO } from '../../../types/InterestAreas'
 
 dayjs.extend(RelativeTime)
 
@@ -28,10 +28,11 @@ interface AnnouncementsCardProps {
 
 export const AnnouncementCard: React.FC<AnnouncementsCardProps> = props => {
   const dispatch = useAppDispatch()
-  const userData = useAppSelector(selectUserData)
-  const isMentor = userData?.role === 'MENTOR'
+  const role = localStorage.getItem('authorities')
+  const isMentor = role === 'MENTOR'
   const { id, title, description, price, createdBy, createdAtDate, interestAreas, category, onUpdateClick } = props
 
+  console.log(createdBy.avatar)
   const handleDelete = () => {
     dispatch(deleteAnnouncement(id)).then(() => {
       dispatch(
@@ -49,7 +50,7 @@ export const AnnouncementCard: React.FC<AnnouncementsCardProps> = props => {
     <Wrapper key={id}>
       <Section>
         <Profile>
-          <AnnouncementUserAvatar variant="square" key={createdBy.id} src={createdBy?.profilePicture} />
+          <AnnouncementUserAvatar variant="square" key={createdBy.id} src={`data:image/jpeg;base64,${createdBy.avatar}`} />
           <NameSection>
             <Fullname variant="body2">{createdBy.fullName}</Fullname>
             <Typography variant="body2">{dayjs(createdAtDate).fromNow()}</Typography>

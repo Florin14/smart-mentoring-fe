@@ -49,11 +49,13 @@ export const appSlice = createSlice({
     },
     authenticate: (_, action: PayloadAction<AuthProps>) => {
       localStorage.setItem('jwtToken', action.payload.jwtToken)
-      localStorage.setItem('user', action.payload.user)
+      localStorage.setItem('email', action.payload.email)
+      localStorage.setItem('authorities', action.payload.authorities.toString())
     },
     deauthenticate: _ => {
       localStorage.removeItem('jwtToken')
-      localStorage.removeItem('user')
+      localStorage.removeItem('email')
+      localStorage.removeItem('authorities')
     },
     toggleSidebar: state => {
       state.sidebarExpanded = !state.sidebarExpanded

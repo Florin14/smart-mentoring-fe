@@ -32,8 +32,7 @@ const AnnouncementsPage: React.FC = () => {
   const announcementsData = useAppSelector(selectAnnouncementsData)
   const searchDone = useAppSelector(selectAnnouncementsResultsSuccess)
   const userData = useAppSelector(selectUserData)
-  const role = userData?.role
-  // const userId = userData?.id
+  const role = localStorage.getItem('authorities')
 
   const [createAnnouncementOpen, setCreateAnnouncementOpen] = useState(false)
   const shouldOpenCreateAnnouncementModal = role === Role.MENTOR && createAnnouncementOpen

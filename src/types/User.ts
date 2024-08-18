@@ -21,7 +21,7 @@ export interface BaseUser {
 }
 
 export interface User extends BaseUser {
-  profilePicture: File | string
+  avatar: File | string
   completedStudies: Study[]
   ongoingStudy: Study
   interestAreas: InterestArea[]
@@ -50,9 +50,11 @@ export interface LoginUserDTO {
 export interface LoginResponseBody {
   value: string // JWT token
   email: string
+  authorities: string[]
 }
 
 export interface AuthProps {
   jwtToken: string
-  user: string
+  email: string, 
+  authorities: string[]
 }

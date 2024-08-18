@@ -7,6 +7,7 @@ import {
   fetchFilterAnnouncementsCall,
   updateAnnouncementCall,
 } from './services'
+import { deleteAnnouncementItem } from './slice'
 
 export const fetchAnnouncements = createAsyncThunk('fetchAnnouncements', async () => {
   const response = await fetchAnnouncementsCall()
@@ -20,9 +21,9 @@ export const fetchFilterAnnouncements = createAsyncThunk('fetchFilterAnnouncemen
   return response.data
 })
 
-export const deleteAnnouncement = createAsyncThunk('deleteAnnouncement', async (id: number) => {
+export const deleteAnnouncement = createAsyncThunk('deleteAnnouncement', async (id: number, {dispatch}) => {
   const response = await deleteAnnouncementsCall(id)
-
+  dispatch(deleteAnnouncementItem(id))
   return response.data
 })
 
