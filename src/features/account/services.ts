@@ -10,8 +10,8 @@ export const fetchUserCall = async (): Promise<AxiosResponse<Response<UserDto>>>
 export const updateUserCall = async (usersFormData: ProfileSubmitType): Promise<AxiosResponse<Response<UserDto>>> =>
   axiosInstance.put('/users/profile', usersFormData, { headers: { 'Content-Type': 'multipart/form-data' } })
 
-export const fetchUserAvatarCall = async (): Promise<AxiosResponse<Blob>> =>
-  axiosInstance.get('/users/profile/picture', { responseType: 'blob' })
+export const fetchUserAvatarCall = async (): Promise<AxiosResponse<any>> =>
+  axiosInstance.get('/users/profile/picture')
 
 export const fetchCompletedStudiesOptionsCall = async (): Promise<AxiosResponse<Response<Study[]>>> =>
   axiosInstance.get('/studies')

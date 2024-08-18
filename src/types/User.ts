@@ -29,6 +29,10 @@ export interface User extends BaseUser {
   birthdate: string
 }
 
+export interface UserAvatar {
+  avatar: File | string
+}
+
 export type UserDto = Partial<User>
 
 export interface RegisterUserDTO {

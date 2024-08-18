@@ -35,7 +35,6 @@ export const NavBar: React.FC = () => {
   //   let handler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
   //     if (!menuRef.current?.contains(e.target as Node)) {
   //       setShowNotificationsMenu(false)
-  //       console.log(menuRef.current)
   //     }
   //   }
 

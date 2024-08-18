@@ -19,7 +19,13 @@ import {
 import { FormInput, ReadOnlyFormInput } from '../common/FormInput'
 import { ProfilePicture } from './ProfilePicture'
 import { Section, useSectionScroll } from './hooks'
-import { fetchCompletedStudiesOptions, fetchInterestAreasOptions, fetchUserData, updateUserData } from './actions'
+import {
+  fetchCompletedStudiesOptions,
+  fetchInterestAreasOptions,
+  fetchUserAvatar,
+  fetchUserData,
+  updateUserData,
+} from './actions'
 
 export type ProfileFormType = Omit<UserDto, 'email' | 'role' | 'profilePicture'> & {
   profilePicture?: File
@@ -51,7 +57,6 @@ const ProfilePage: React.FC = () => {
   const userData = useAppSelector(selectUserData)
   const userDataLoading = useAppSelector(selectUserDataLoading)
 
-  const userAvatar = useAppSelector(selectUserAvatar)
   const userAvatarLoading = useAppSelector(selectUserAvatarLoading)
 
   const updateUserLoading = useAppSelector(selectUpdateUserLoading)
@@ -63,40 +68,17 @@ const ProfilePage: React.FC = () => {
   const interestAreasOptionsLoading = useAppSelector(selectInterestAreasOptionsLoading)
   const [init, setInit] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   if (!init) {
-  //     dispatch(fetchUserData())
-  //     setInit(true)
-  //     console.log(23432)
-  //   }
-  //   // dispatch(fetchUserAvatar())
-  // }, [init])
+  useEffect(() => {
+    if (!init) {
+      dispatch(fetchUserData())
+      dispatch(fetchUserAvatar())
+      setInit(true)
+    }
+  }, [init])
 
-  // Load Completed Studies Options
-  // useEffect(() => {
-  //   if (!init) {
-  // dispatch(fetchCompletedStudiesOptions())
-  // dispatch(fetchInterestAreasOptions())
-  //     setInit(true)
-  //   }
-  // }, [init])
-
-  // Load fields with existing data
-  // useEffect(() => {
-  //   if (userData) {
-  //     for (const [key, value] of Object.entries(userData)) {
-  //       setValue(key as keyof ProfileFormType, value, { shouldDirty: false })
-  //     }
-  //   }
-  // }, [userData])
-
-  // Load the user profile picture
-  // useEffect(() => {
-  //   if (userAvatar) {
-  //     const userAvatarObject = new File([userAvatar], 'profilePicture.jpg')
-  //     setValue('profilePicture', userAvatarObject, { shouldDirty: false })
-  //   }
-  // }, [userAvatar])
+  useEffect(() => {
+    console.log(124112)
+  }, [])
 
   const handleSaveProfile: SubmitHandler<ProfileFormType> = formData => {
     // IMPORTANT: Interest areas and fields that contain a list of strings should be handled here separately

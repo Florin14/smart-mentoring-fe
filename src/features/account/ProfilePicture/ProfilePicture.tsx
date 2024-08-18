@@ -1,37 +1,47 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { styled } from '@mui/material'
 import { useFormContext } from 'react-hook-form'
 import { initialPictureURL } from '../utils'
-
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { updateUserData } from '../actions'
-import { useAppDispatch } from '../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { selectUserAvatar } from '../selectors'
+import { updateAvatar } from '../slice'
 
-
-export const ProfilePicture: React.FC = ({  }) => {
-  const { setValue, watch } = useFormContext()
+export const ProfilePicture: React.FC = () => {
   const dispatch = useAppDispatch()
   const pictureRef = useRef<HTMLInputElement>(null)
+  const userAvatar = useAppSelector(selectUserAvatar)
 
   const handlePictureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const imageFile: File = e.target.files[0]
+      const imageFile = e.target.files[0]
+
       const submittedData = {
         profilePicture: imageFile,
       }
-  
+
       dispatch(updateUserData(submittedData))
-      setValue('profilePicture', imageFile, { shouldDirty: true })
+      dispatch(updateAvatar({ avatar: imageFile }))
     }
   }
 
-  const pictureFile = watch('profilePicture')
+  const getPictureSrc = () => {
+    if (!userAvatar) {
+      return initialPictureURL
+    }
+    if (userAvatar instanceof File || typeof userAvatar == 'string') {
+      return userAvatar instanceof File ? URL.createObjectURL(userAvatar) : `data:image/jpeg;base64,${userAvatar}`
+    }
+
+    return initialPictureURL
+  }
 
   return (
     <>
       <PictureWrapper onClick={() => pictureRef.current?.click()}>
         <PictureHoverIcon id="image-upload-icon" />
-        <Picture src={pictureFile ? URL.createObjectURL(pictureFile) : initialPictureURL} />
+        <Picture src={getPictureSrc()} />
       </PictureWrapper>
       <PictureInput ref={pictureRef} type="file" accept="image/png, image/jpeg" onChange={handlePictureUpload} />
     </>

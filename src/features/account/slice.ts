@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { InterestArea, Study, UserDto } from '../../types/User'
+import { InterestArea, Study, UserAvatar, UserDto } from '../../types/User'
 import {
   fetchCompletedStudiesOptions,
   fetchInterestAreasOptions,
@@ -13,7 +13,7 @@ export interface UserData {
   userDataLoading: boolean
   userDataComplete: boolean
   userDataError: boolean
-  userAvatar?: Blob
+  userAvatar?: File | string
   userAvatarLoading: boolean
   updateUserLoading: boolean
   completedStudiesOptions?: Study[]
@@ -41,6 +41,9 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     resetUserData: _ => initialState,
+    updateAvatar: (state, action: PayloadAction<UserAvatar>) => {
+      state.userAvatar = action.payload.avatar
+    },
   },
   extraReducers: builder => {
     builder
@@ -65,7 +68,7 @@ export const userSlice = createSlice({
       .addCase(fetchUserAvatar.pending, state => {
         state.userAvatarLoading = true
       })
-      .addCase(fetchUserAvatar.fulfilled, (state, action: PayloadAction<Blob>) => {
+      .addCase(fetchUserAvatar.fulfilled, (state, action: PayloadAction<any>) => {
         state.userAvatar = action.payload
         state.userAvatarLoading = false
       })
@@ -108,6 +111,6 @@ export const userSlice = createSlice({
   },
 })
 
-export const { resetUserData } = userSlice.actions
+export const { resetUserData, updateAvatar } = userSlice.actions
 
 export default userSlice.reducer

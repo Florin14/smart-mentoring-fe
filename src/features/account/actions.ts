@@ -7,6 +7,7 @@ import {
   updateUserCall,
 } from './services'
 import { ProfileSubmitType } from './ProfilePage'
+import { updateAvatar } from './slice'
 
 export const fetchUserData = createAsyncThunk('fetchUserData', async () => {
   const response = await fetchUserCall()
@@ -34,10 +35,10 @@ export const updateUserAvatar = createAsyncThunk(
   }
 )
 
-export const fetchUserAvatar = createAsyncThunk('fetchUserAvatar', async () => {
+export const fetchUserAvatar = createAsyncThunk('fetchUserAvatar', async ( _, { dispatch }) => {
   const response = await fetchUserAvatarCall()
-
-  return response.data
+  dispatch(updateAvatar({avatar: response.data.data.avatar}))
+  return response.data.data.avatar
 })
 
 export const fetchCompletedStudiesOptions = createAsyncThunk('fetchCompletedStudiesOptions', async () => {

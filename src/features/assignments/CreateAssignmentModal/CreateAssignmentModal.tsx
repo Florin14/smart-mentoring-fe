@@ -117,7 +117,6 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
   const handleAssignmentSubmit: SubmitHandler<CreateAssignmentType> = async formData => {
     // TODO: Map studentIds to students AND authorId to author before sending data / Convert dates to string
     // TODO: Dispatch create assignment action
-    // console.log(formData)
 
     if (editMode && assignment) {
       const updatedAssignment: AssignmentRequestDto = {
