@@ -27,19 +27,27 @@ export const LoginForm: React.FC<LoginFormProps> = ({ registerClick }) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
+
+  const resetForm = () => {
+    reset({
+      email: '',
+      password: '',
+    })
+  }
   // Wire to backend endpoint using RTK (create a slice etc.)
   // Note: handleRegistrationSubmit accepts formData as a parameter
   const handleLoginSubmit: SubmitHandler<LoginFormType> = async formData => {
     // API call to '/login'
     dispatch(authenticateUser(formData)).then(() => {
       dispatch(resetAuthState())
+      resetForm()
       navigate(paths.PROFILE)
     })
   }
 
   const goToRegister = () => {
     registerClick()
-    reset()
+    resetForm()
   }
 
   return (

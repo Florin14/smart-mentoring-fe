@@ -57,10 +57,6 @@ const AnnouncementsPage: React.FC = () => {
     return <Loader fullscreen={true} />
   }
 
-  if (announcementsError || !announcementsData) {
-    return null
-  }
-
   const myAnnouncements = announcementsData && [
     ...announcementsData.filter(announcement => announcement.user.fullName === userData?.fullName),
   ]

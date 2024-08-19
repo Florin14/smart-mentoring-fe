@@ -71,7 +71,7 @@ export const MentorAssignmentCard: React.FC<MentorAssignmentCardProps> = ({
               // TODO: If I'll have time, I'll do this
               // <Tooltip key={assignedUserId} title="user name">
               //   <AssignedUsersAvatar
-              //     // src={users?.find(user_ => user_.id === assignedUser.userId)?.avatar}
+              //     // src={users?.find(user_ => user_.id === assignedUser.userId)?.profilePicture}
               //     src={initialPictureURL}
               //   />
               // </Tooltip>

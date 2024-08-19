@@ -17,7 +17,7 @@ export const AlreadyAuth: FC<PropsWithChildren<AlreadyAuthProps>> = ({ children,
   const isAuthenticated = !!localStorage.getItem('jwtToken')
 
   if (isAuthenticated) {
-    return <Navigate to={redirectTo} />
+    return <Navigate to={"/"} />
   }
 
   return <>{children}</>

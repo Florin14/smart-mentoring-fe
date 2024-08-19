@@ -82,16 +82,7 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
     if (isOpened) dispatch(fetchInterestAreasOptions())
   }, [isOpened])
 
-  console.log(userData)
-
   const handleAnnouncementSubmit: SubmitHandler<CreateAnnouncementType> = async formData => {
-    console.log({
-      interestAreasId: formData.interestArea.id,
-      userId: userData?.id,
-      title: formData.title,
-      price: formData.price,
-      description: formData.description,
-    })
     if (!editMode) {
       dispatch(
         addAnnouncement({

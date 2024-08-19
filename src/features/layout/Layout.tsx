@@ -12,7 +12,7 @@ import { fetchUserData } from '../account/actions'
 
 export const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
-  const isAuthenticated = !!localStorage.getItem('user')
+  const isAuthenticated = !!localStorage.getItem('jwtToken')
 
   const userData = useAppSelector(selectUserData)
   useEffect(() => {

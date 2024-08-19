@@ -5,6 +5,7 @@ import userReducer from '../features/account/slice'
 import assignmentsReducer from '../features/assignments/slice'
 import announcementsReducer from '../features/announcements/slice'
 import appointmentsReducer from '../features/appointments/slice'
+import chatReducer from "../features/chat/slice"
 
 export const reducer = combineReducers({
   appState: appReducer,
@@ -12,6 +13,7 @@ export const reducer = combineReducers({
   assignmentsState: assignmentsReducer,
   announcementsState: announcementsReducer,
   appointmentsState: appointmentsReducer,
+  chatState: chatReducer,
 })
 
 export const store = configureStore({

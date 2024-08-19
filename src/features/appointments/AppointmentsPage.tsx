@@ -23,7 +23,7 @@ const AppointmentsPage: React.FC = () => {
 
   return (
     <Container>
-      <Title variant="overline">Assignments</Title>
+      <Title variant="overline">Appointments</Title>
       {role === Role.MENTOR && (
         <CreateAppointmentButton
           variant="outlined"

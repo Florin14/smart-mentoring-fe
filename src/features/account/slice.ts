@@ -42,7 +42,7 @@ export const userSlice = createSlice({
   reducers: {
     resetUserData: _ => initialState,
     updateAvatar: (state, action: PayloadAction<UserAvatar>) => {
-      state.userAvatar = action.payload.avatar
+      state.userAvatar = action.payload.profilePicture
     },
   },
   extraReducers: builder => {

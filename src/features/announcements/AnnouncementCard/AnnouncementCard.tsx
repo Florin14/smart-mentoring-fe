@@ -11,6 +11,7 @@ import { displaySnackbar } from '../../application/slice'
 import { AnnouncementCategory } from '../AnnouncementsPage'
 import { fetchAnnouncements, deleteAnnouncement } from '../actions'
 import { InterestAreasResponseDTO } from '../../../types/InterestAreas'
+import { handleContactMenu } from '../../chat/slice'
 
 dayjs.extend(RelativeTime)
 
@@ -32,7 +33,6 @@ export const AnnouncementCard: React.FC<AnnouncementsCardProps> = props => {
   const isMentor = role === 'MENTOR'
   const { id, title, description, price, createdBy, createdAtDate, interestAreas, category, onUpdateClick } = props
 
-  console.log(createdBy.avatar)
   const handleDelete = () => {
     dispatch(deleteAnnouncement(id)).then(() => {
       dispatch(
@@ -50,7 +50,11 @@ export const AnnouncementCard: React.FC<AnnouncementsCardProps> = props => {
     <Wrapper key={id}>
       <Section>
         <Profile>
-          <AnnouncementUserAvatar variant="square" key={createdBy.id} src={`data:image/jpeg;base64,${createdBy.avatar}`} />
+          <AnnouncementUserAvatar
+            variant="square"
+            key={createdBy.id}
+            src={`data:image/jpeg;base64,${createdBy.profilePicture}`}
+          />
           <NameSection>
             <Fullname variant="body2">{createdBy.fullName}</Fullname>
             <Typography variant="body2">{dayjs(createdAtDate).fromNow()}</Typography>
@@ -84,7 +88,15 @@ export const AnnouncementCard: React.FC<AnnouncementsCardProps> = props => {
             </ActionButtons>
           </>
         )}
-        {!isMentor && <ViewProfileButton>Contact</ViewProfileButton>}
+        {!isMentor && (
+          <ViewProfileButton
+            onClick={() => {
+              dispatch(handleContactMenu({ isOpen: true }))
+            }}
+          >
+            Contact
+          </ViewProfileButton>
+        )}
       </Footer>
     </Wrapper>
   )

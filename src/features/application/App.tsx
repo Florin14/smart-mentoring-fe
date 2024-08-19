@@ -47,11 +47,11 @@ const router = createBrowserRouter([
   {
     path: paths.LANDING_PAGE,
     element: (
-      <AlreadyAuth redirectTo={paths.PROFILE}>
-        <LoadingScreen>
-          <WelcomePage />
-        </LoadingScreen>
-      </AlreadyAuth>
+      // <AlreadyAuth redirectTo={paths.PROFILE}>
+      <LoadingScreen>
+        <WelcomePage />
+      </LoadingScreen>
+      // </AlreadyAuth>
     ),
   },
   {

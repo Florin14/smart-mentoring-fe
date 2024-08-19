@@ -144,58 +144,58 @@ const AssignmentsPage: React.FC = () => {
     return <Loader fullscreen={true} />
   }
 
-  if (assignmentsError || !assignmentsData || !role || !userId) {
-    return null
-  }
+  // if (assignmentsError || !assignmentsData || !role || !userId) {
+  //   return null
+  // }
 
-  const renderAssignments = (assignments?: Assignment[], categoryIndex?: number) => {
-    if (categoryIndex !== selectedCategory) {
-      return null
-    }
+  // const renderAssignments = (assignments?: Assignment[], categoryIndex?: number) => {
+  //   if (categoryIndex !== selectedCategory) {
+  //     return null
+  //   }
 
-    if (assignments?.length) {
-      return (
-        <Assignments key={categoryIndex} role="tabpanel">
-          {role === Role.MENTOR &&
-            assignments.map((assignment, idx) => (
-              <MentorAssignmentCard
-                key={idx}
-                id={assignment.id}
-                title={assignment.title}
-                author={assignment.author}
-                description={assignment.description}
-                maximumGrade={assignment.maximumGrade}
-                startDate={assignment.startDate}
-                deadline={assignment.deadline}
-                studentIds={assignment.studentIds}
-                submissions={assignment.submissions}
-                category={selectedCategory}
-                students={students}
-                onViewClick={() => handleOpenViewAssignmentModal(assignment)}
-                onUpdateClick={() => handleOpenAssignmentWhenUpdate(assignment)}
-                onDeleteClick={() => handleDeleteDialogOpen(assignment.id)}
-              />
-            ))}
-          {role === Role.STUDENT &&
-            assignments.map((assignment, idx) => (
-              <StudentAssignmentCard
-                key={idx}
-                assignment={assignment}
-                category={selectedCategory}
-                onViewClick={() => handleCreateSubmissionModalOpen(assignment)}
-              />
-            ))}
-        </Assignments>
-      )
-    }
+  //   if (assignments?.length) {
+  //     return (
+  //       <Assignments key={categoryIndex} role="tabpanel">
+  //         {role === Role.MENTOR &&
+  //           assignments.map((assignment, idx) => (
+  //             <MentorAssignmentCard
+  //               key={idx}
+  //               id={assignment.id}
+  //               title={assignment.title}
+  //               author={assignment.author}
+  //               description={assignment.description}
+  //               maximumGrade={assignment.maximumGrade}
+  //               startDate={assignment.startDate}
+  //               deadline={assignment.deadline}
+  //               studentIds={assignment.studentIds}
+  //               submissions={assignment.submissions}
+  //               category={selectedCategory}
+  //               students={students}
+  //               onViewClick={() => handleOpenViewAssignmentModal(assignment)}
+  //               onUpdateClick={() => handleOpenAssignmentWhenUpdate(assignment)}
+  //               onDeleteClick={() => handleDeleteDialogOpen(assignment.id)}
+  //             />
+  //           ))}
+  //         {role === Role.STUDENT &&
+  //           assignments.map((assignment, idx) => (
+  //             <StudentAssignmentCard
+  //               key={idx}
+  //               assignment={assignment}
+  //               category={selectedCategory}
+  //               onViewClick={() => handleCreateSubmissionModalOpen(assignment)}
+  //             />
+  //           ))}
+  //       </Assignments>
+  //     )
+  //   }
 
-    return (
-      <EmptyAssignmentsText key={categoryIndex} variant="body1">
-        No assignments here yet
-      </EmptyAssignmentsText>
-    )
-  }
-
+    // return (
+    //   <EmptyAssignmentsText key={categoryIndex} variant="body1">
+    //     No assignments here yet
+    //   </EmptyAssignmentsText>
+    // )
+  // }
+  
   return (
     <Container>
       <Title variant="overline">Assignments</Title>
@@ -231,7 +231,7 @@ const AssignmentsPage: React.FC = () => {
         <StyledTab label="Ongoing" aria-selected={AssignmentCategory.ONGOING === selectedCategory} />
         <StyledTab label="Finished" aria-selected={AssignmentCategory.FINISHED === selectedCategory} />
       </Tabs>
-      {[notStartedAssignments, ongoingAssignments, finishedAssignments].map(renderAssignments)}
+      {/* {[notStartedAssignments, ongoingAssignments, finishedAssignments].map(renderAssignments)} */}
     </Container>
   )
 }

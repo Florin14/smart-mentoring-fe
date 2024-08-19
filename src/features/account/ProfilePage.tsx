@@ -27,16 +27,16 @@ import {
   updateUserData,
 } from './actions'
 
-export type ProfileFormType = Omit<UserDto, 'email' | 'role' | 'avatar'> & {
-  avatar?: File
+export type ProfileFormType = Omit<UserDto, 'email' | 'role' | 'profilePicture'> & {
+  profilePicture?: File
   password: string
 }
 
 export type ProfileSubmitType = Omit<
   UserDto,
-  'email' | 'role' | 'avatar' | 'completedStudies' | 'interestAreas'
+  'email' | 'role' | 'profilePicture' | 'completedStudies' | 'interestAreas'
 > & {
-  avatar?: File
+  profilePicture?: File
   completedStudyIds?: number[]
   interestAreaIds?: number[]
   ongoingStudyId?: number
@@ -69,13 +69,11 @@ const ProfilePage: React.FC = () => {
   const [init, setInit] = useState<boolean>(false)
 
   useEffect(() => {
-    if (!init) {
-      // dispatch(fetchUserData())
-      dispatch(fetchUserAvatar())
-      dispatch(fetchInterestAreasOptions())
-      setInit(true)
-    }
-  }, [init])
+    // if (!init) {
+    // dispatch(fetchUserData())
+    dispatch(fetchUserAvatar())
+    dispatch(fetchInterestAreasOptions())
+  }, [])
 
   const handleSaveProfile: SubmitHandler<ProfileFormType> = formData => {
     // IMPORTANT: Interest areas and fields that contain a list of strings should be handled here separately

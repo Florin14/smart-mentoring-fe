@@ -4,7 +4,7 @@ import { InterestAreasResponseDTO } from './InterestAreas'
 export interface AnnouncementUserResponseDTO {
   id: number
   fullName: string
-  avatar: string
+  profilePicture: string
 }
 
 export interface Announcement {

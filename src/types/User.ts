@@ -21,7 +21,7 @@ export interface BaseUser {
 }
 
 export interface User extends BaseUser {
-  avatar: File | string
+  profilePicture: File | string
   completedStudies: Study[]
   ongoingStudy: Study
   interestAreas: InterestArea[]
@@ -30,7 +30,7 @@ export interface User extends BaseUser {
 }
 
 export interface UserAvatar {
-  avatar: File | string
+  profilePicture: File | string
 }
 
 export type UserDto = Partial<User>

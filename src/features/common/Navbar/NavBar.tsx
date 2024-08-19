@@ -20,7 +20,11 @@ import IconButton from '@mui/material/IconButton'
 import MailIcon from '@mui/icons-material/Mail'
 import MenuIcon from '@mui/icons-material/Menu'
 import { toggleSidebar } from '../../application/slice'
-import { useAppDispatch } from '../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { initialPictureURL } from '../../account/utils'
+import { selectUserAvatar } from '../../account/selectors'
+import { selectIsChatMenuOpen } from '../../chat/selectors'
+import { handleContactMenu } from '../../chat/slice'
 
 export const NavBar: React.FC = () => {
   const [showMessagesMenu, setShowMessagesMenu] = useState(false)
@@ -30,7 +34,8 @@ export const NavBar: React.FC = () => {
   const theme = useTheme()
   const isMatch = useMediaQuery(theme.breakpoints.down('md'))
   const menuRef = useRef<HTMLDivElement | null>(null)
-
+  const userAvatar = useAppSelector(selectUserAvatar)
+  const isMenuOpen = useAppSelector(selectIsChatMenuOpen)
   // useEffect(() => {
   //   let handler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
   //     if (!menuRef.current?.contains(e.target as Node)) {
@@ -44,6 +49,17 @@ export const NavBar: React.FC = () => {
   //   //   document.removeEventListener('mousedown', handler)
   //   // }
   // }, [])
+
+  const getPictureSrc = () => {
+    if (!userAvatar) {
+      return initialPictureURL
+    }
+    if (userAvatar instanceof File || typeof userAvatar == 'string') {
+      return userAvatar instanceof File ? URL.createObjectURL(userAvatar) : `data:image/jpeg;base64,${userAvatar}`
+    }
+
+    return initialPictureURL
+  }
 
   return (
     <Container>
@@ -71,7 +87,18 @@ export const NavBar: React.FC = () => {
             </Tooltip>
             <Tooltip title="Messages">
               <div ref={menuRef}>
-                <StyledIconButton size="large" onClick={() => setShowMessagesMenu(!showMessagesMenu)}>
+                <StyledIconButton
+                  size="large"
+                  onClick={() => {
+                    if (showMessagesMenu || isMenuOpen) {
+                      dispatch(handleContactMenu({ isOpen: false }))
+                      setShowMessagesMenu(false)
+                    } else {
+                      dispatch(handleContactMenu({ isOpen: true }))
+                      setShowMessagesMenu(true)
+                    }
+                  }}
+                >
                   <MailIcon />
                 </StyledIconButton>{' '}
               </div>
@@ -81,11 +108,12 @@ export const NavBar: React.FC = () => {
                 <LogoutIcon />
               </StyledIconButton>
             </Tooltip>
+            <Picture src={getPictureSrc()} onClick={() => navigate('/profile')} />
           </RightSection>
         </NavContainer>
       )}
-      {showMessagesMenu && (
-        <DropdownMenu open={showMessagesMenu}>
+      {(showMessagesMenu || isMenuOpen) && (
+        <DropdownMenu open={showMessagesMenu || isMenuOpen}>
           <TopSection>
             <Title>Inbox</Title>
           </TopSection>
@@ -161,6 +189,14 @@ const RightSection = styled('div')`
   align-items: center;
   height: inherit;
   order: 3;
+`
+
+const Picture = styled('img')`
+  object-fit: cover;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
 `
 
 const LeftSection = styled('div')`

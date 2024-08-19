@@ -17,7 +17,7 @@ interface RequireAuthProps {
 
 export const RequireAuth: FC<PropsWithChildren<RequireAuthProps>> = ({ children, redirectTo, message }) => {
   const dispatch = useAppDispatch()
-  const isAuthenticated = !!localStorage.getItem('user')
+  const isAuthenticated = !!localStorage.getItem('jwtToken')
 
   if (!isAuthenticated) {
     dispatch(

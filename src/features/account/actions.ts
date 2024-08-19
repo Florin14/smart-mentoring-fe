@@ -41,8 +41,8 @@ export const updateUserAvatar = createAsyncThunk(
 
 export const fetchUserAvatar = createAsyncThunk('fetchUserAvatar', async ( _, { dispatch }) => {
   const response = await fetchUserAvatarCall()
-  dispatch(updateAvatar({avatar: response.data.data.avatar}))
-  return response.data.data.avatar
+  dispatch(updateAvatar({profilePicture: response.data.data.profilePicture}))
+  return response.data.data.profilePicture
 })
 
 export const fetchCompletedStudiesOptions = createAsyncThunk('fetchCompletedStudiesOptions', async () => {
