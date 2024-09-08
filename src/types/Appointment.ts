@@ -22,9 +22,8 @@ export interface AppointmentResponseDto {
 }
 
 export interface AppointmentRequestDto {
-  id: number
-  student: UserAppointment
-  mentor: UserAppointment
+  studentId: number
+  mentorId: number
   date: string
   locationDetails: string
 }

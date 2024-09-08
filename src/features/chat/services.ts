@@ -1,9 +1,9 @@
 import { Response } from '../../types/Response'
 import { AssignmentRequestDto, AssignmentResponseDto } from '../../types/Assignment'
-import { mockAssignments } from './mock-objects'
 import { AxiosResponse } from 'axios'
 import { axiosInstance } from '../../api'
 import { BaseUser } from '../../types/User'
+import { mockAssignments } from '../assignments/mock-objects'
 
 type mockAxiosResponse<T> = {
   data: T

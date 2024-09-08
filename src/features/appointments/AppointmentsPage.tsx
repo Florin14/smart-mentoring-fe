@@ -7,6 +7,7 @@ import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled'
 import { selectAppointmentsData } from './selectors'
 import { Role } from '../../types/User'
 import AddIcon from '@mui/icons-material/Add'
+import { CreateAppointmentModal } from './CreateAppointmentModal'
 
 const AppointmentsPage: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -19,7 +20,7 @@ const AppointmentsPage: React.FC = () => {
   }, [])
 
   // TODO: Implement create appointment
-  const [_createAppointmentModalOpen, setCreateAppointmentModalOpen] = useState(false)
+  const [isCreateAppointmentModalOpen, setIsCreateAppointmentModalOpen] = useState(false)
 
   return (
     <Container>
@@ -28,8 +29,7 @@ const AppointmentsPage: React.FC = () => {
         <CreateAppointmentButton
           variant="outlined"
           color="secondary"
-          onClick={() => setCreateAppointmentModalOpen(true)}
-          disabled
+          onClick={() => setIsCreateAppointmentModalOpen(true)}
         >
           <AddIcon /> Create Appointment
         </CreateAppointmentButton>
@@ -53,6 +53,12 @@ const AppointmentsPage: React.FC = () => {
           ))}
         </List>
       </ListWrapper>
+      <CreateAppointmentModal
+        isOpened={isCreateAppointmentModalOpen}
+        handleClose={() => {
+          setIsCreateAppointmentModalOpen(false)
+        }}
+      />
     </Container>
   )
 }
