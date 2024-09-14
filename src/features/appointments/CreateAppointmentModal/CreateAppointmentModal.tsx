@@ -8,7 +8,7 @@ import {
   styled,
   Typography,
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SubmitHandler, FormProvider, useController, useForm } from 'react-hook-form'
 import { InterestArea, Role } from '../../../types/User'
 import { FormInput } from '../../common/FormInput'
@@ -20,12 +20,21 @@ import { createAppointment, updateAppointment } from '../actions'
 import { AppointmentResponseDto } from '../../../types/Appointment'
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined'
 import QueryBuilderOutlinedIcon from '@mui/icons-material/QueryBuilderOutlined'
+import StyledCalendar from '../../common/StyledCalendar/StyledCalendar'
 export type CreateAppointmentType = {
   id: number
   title: string
   interestArea: InterestArea
   description: string
   price: number
+}
+
+export enum DatetimeType {
+  TODAY,
+  TOMMOROW,
+  OTHER,
+  ANYTIME,
+  CHOSEN_TIME,
 }
 
 interface CreateAppointmentModalProps {
@@ -63,6 +72,9 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     control,
     rules: { required: true },
   })
+
+  const [datepickerType, setDatepickerType] = useState<DatetimeType>(DatetimeType.TODAY)
+  const [timepickerType, setTimepickerType] = useState<DatetimeType>(DatetimeType.ANYTIME)
 
   const editMode = !!appointment
 
@@ -142,16 +154,58 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
                 <PickerTitle>Alege o data</PickerTitle>
               </PickerTitleWrapper>
               <TogglesWrapper>
-                <DateTodayToggle>Azi</DateTodayToggle>
-                <DateTodayToggle>Maine</DateTodayToggle>
-                <DateTodayToggle>Alege o data</DateTodayToggle>
+                <DateTimeToggle
+                  selected={datepickerType === DatetimeType.TODAY}
+                  onClick={() => {
+                    setDatepickerType(DatetimeType.TODAY)
+                  }}
+                >
+                  Azi
+                </DateTimeToggle>
+                <DateTimeToggle
+                  selected={datepickerType === DatetimeType.TOMMOROW}
+                  onClick={() => {
+                    setDatepickerType(DatetimeType.TOMMOROW)
+                  }}
+                >
+                  Maine
+                </DateTimeToggle>
+                <DateTimeToggle
+                  selected={datepickerType === DatetimeType.OTHER}
+                  isToChoose
+                  onClick={() => {
+                    setDatepickerType(DatetimeType.OTHER)
+                  }}
+                >
+                  Alege o data
+                </DateTimeToggle>
               </TogglesWrapper>
             </DatepickerWrapper>
+            <StyledCalendar />
             <TimepickerWrapper>
               <PickerTitleWrapper>
                 <QueryBuilderOutlinedIcon />
                 <PickerTitle>Alege timp</PickerTitle>
               </PickerTitleWrapper>
+              <TogglesWrapper>
+                <DateTimeToggle
+                  selected={timepickerType === DatetimeType.ANYTIME}
+                  onClick={() => {
+                    setTimepickerType(DatetimeType.ANYTIME)
+                  }}
+                >
+                  Orice ora
+                </DateTimeToggle>
+                <DateTimeToggle
+                  selected={timepickerType === DatetimeType.CHOSEN_TIME}
+                  isToChoose
+                  onClick={() => {
+                    setTimepickerType(DatetimeType.CHOSEN_TIME)
+                  }}
+                >
+                  Alege ora
+                </DateTimeToggle>
+              </TogglesWrapper>
             </TimepickerWrapper>
           </StyledDialogContent>
           <DialogActions>
@@ -208,14 +262,28 @@ const PickerTitleWrapper = styled('div')`
 
 const PickerTitle = styled(Typography)``
 
-const DateTodayToggle = styled('div')`
+const DateTimeToggle = styled('div')<{ selected: boolean; isToChoose?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #d1d1d1;
+  border: 1px solid ${props => (props.selected ? props.theme.palette.secondary.main : '#d1d1d1')};
   height: 40px;
   border-radius: 4px;
-  color: #d1d1d1;
+  color: ${props => (props.selected ? 'black' : '#d1d1d1')};
+  cursor: pointer;
+  position: relative;
+
+  &::after {
+    content: '';
+    display: ${props => (props.selected && props.isToChoose ? 'block' : 'none')};
+    position: absolute;
+    bottom: -5px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid ${props => props.theme.palette.secondary.main};
+  }
 `
 
 const TogglesWrapper = styled('div')`
