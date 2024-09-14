@@ -181,7 +181,7 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
                 </DateTimeToggle>
               </TogglesWrapper>
             </DatepickerWrapper>
-            <StyledCalendar />
+            {datepickerType === DatetimeType.OTHER && <StyledCalendar />}
             <TimepickerWrapper>
               <PickerTitleWrapper>
                 <QueryBuilderOutlinedIcon />
