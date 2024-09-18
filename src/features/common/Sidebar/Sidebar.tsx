@@ -57,6 +57,12 @@ export const Sidebar: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Assignments" />
         </CustomListItem>
+        <CustomListItem selected={activeItem(paths.CHAT)} onClick={() => navigate(paths.CHAT)}>
+          <ListItemIcon>
+            <NoteAltIcon />
+          </ListItemIcon>
+          <ListItemText primary="Chat" />
+        </CustomListItem>
       </ExpandableList>
     </Container>
   )

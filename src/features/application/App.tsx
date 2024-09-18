@@ -17,6 +17,8 @@ const ProfilePage = React.lazy(() => import('../account/ProfilePage'))
 const AssignmentsPage = React.lazy(() => import('../assignments/AssignmentsPage'))
 const AnnouncementsPage = React.lazy(() => import('../announcements/AnnouncementsPage'))
 const AppointmentsPage = React.lazy(() => import('../appointments/AppointmentsPage'))
+const ChatPage = React.lazy(() => import('../chat/ChatPage'))
+
 
 const router = createBrowserRouter([
   {
@@ -37,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: paths.APPOINTMENTS,
         element: <AppointmentsPage />,
+      },
+      {
+        path: paths.CHAT,
+        element: <ChatPage />,
       },
       {
         path: paths.LOGOUT,
