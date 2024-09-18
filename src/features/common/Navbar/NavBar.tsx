@@ -25,7 +25,6 @@ import { initialPictureURL } from '../../account/utils'
 import { selectUserAvatar } from '../../account/selectors'
 import { selectIsChatMenuOpen } from '../../chat/selectors'
 import { handleContactMenu } from '../../chat/slice'
-import ChatComponent from '../../chat/ChatComponent'
 
 export const NavBar: React.FC = () => {
   const [showMessagesMenu, setShowMessagesMenu] = useState(false)
@@ -109,9 +108,7 @@ export const NavBar: React.FC = () => {
                 <LogoutIcon />
               </StyledIconButton>
             </Tooltip>
-            <div style={{ position: 'relative' }}>
-              <Picture src={getPictureSrc()} onClick={() => navigate('/profile')} /> <ActiveUserIconPicture />
-            </div>
+            <Picture src={getPictureSrc()} onClick={() => navigate('/profile')} />
           </RightSection>
         </NavContainer>
       )}
@@ -135,7 +132,6 @@ export const NavBar: React.FC = () => {
               id="fullWidth"
             ></SearchInput>
           </Search>
-          {/* <ChatComponent/> */}
           {/* <ItemsContainer>
             <InboxItem img="" text="">
               hello
@@ -201,16 +197,6 @@ const Picture = styled('img')`
   height: 30px;
   border-radius: 50%;
   cursor: pointer;
-`
-
-const ActiveUserIconPicture = styled('div')`
-  position: absolute;
-  top: 0;
-  left: -2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: green;
 `
 
 const LeftSection = styled('div')`
