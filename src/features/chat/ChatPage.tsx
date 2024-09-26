@@ -5,58 +5,52 @@ import { styled, Tabs, Tab, Typography, css, Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 
 import { Loader } from '../common/Loader'
-import { AnnouncementDto } from '../../types/Announcements'
 import { selectUserData } from '../account/selectors'
 import { Role } from '../../types/User'
+import ChatComponent from './ChatComponent/ChatComponent'
+import { ChatDto } from '../../types/Chats'
 
-export enum AnnouncementCategory {
+export enum ChatCategory {
   FEED,
   FOLLOWED,
 }
 
 const ChatPage: React.FC = () => {
   const dispatch = useAppDispatch()
-  const [selectedCategory, setSelectedCategory] = useState(AnnouncementCategory.FEED)
+  const [selectedCategory, setSelectedCategory] = useState(ChatCategory.FEED)
 
   const userData = useAppSelector(selectUserData)
   const role = localStorage.getItem('authorities')
 
-  const [createAnnouncementOpen, setCreateAnnouncementOpen] = useState(false)
-  const shouldOpenCreateAnnouncementModal = role === Role.MENTOR && createAnnouncementOpen
-  const [updatedAnnouncement, setUpdatedAnnouncement] = useState<AnnouncementDto | undefined>(undefined)
+  const [createChatOpen, setCreateChatOpen] = useState(false)
+  const [updatedChat, setUpdatedChat] = useState<ChatDto | undefined>(undefined)
 
-  const handleOpenAnnouncementWhenUpdate = (announcement: AnnouncementDto) => {
-    setUpdatedAnnouncement(announcement)
-    setCreateAnnouncementOpen(true)
+  const handleOpenChatWhenUpdate = (chat: ChatDto) => {
+    setUpdatedChat(chat)
+    setCreateChatOpen(true)
   }
 
-  const handleCloseCreateAnnouncement = () => {
-    setCreateAnnouncementOpen(false)
-    setUpdatedAnnouncement(undefined)
+  const handleCloseCreateChat = () => {
+    setCreateChatOpen(false)
+    setUpdatedChat(undefined)
   }
 
-  // Load announcements data on page load
-  useEffect(() => {
-  }, [])
-
-//   if (announcementsLoading) {
-//     return <Loader fullscreen={true} />
-//   }
 
   return (
     <Container>
-      <Title variant="overline">Announcements</Title>
+      <Title variant="overline">Chats</Title>
       {role === Role.MENTOR && (
-        <CreateAnnouncementButton variant="outlined" color="secondary" onClick={() => setCreateAnnouncementOpen(true)}>
-          <AddIcon /> Create Announcement
-        </CreateAnnouncementButton>
+        <CreateChatButton variant="outlined" color="secondary" onClick={() => setCreateChatOpen(true)}>
+          <AddIcon /> Create Chat
+        </CreateChatButton>
       )}
-      <Tabs value={selectedCategory} onChange={()=> {}} indicatorColor="secondary">
-        <StyledTab label="Feed" aria-selected={AnnouncementCategory.FEED === selectedCategory} />
+      <Tabs value={selectedCategory} onChange={() => {}} indicatorColor="secondary">
+        <StyledTab label="Feed" aria-selected={ChatCategory.FEED === selectedCategory} />
         {role === Role.MENTOR && (
-          <StyledTab label="Your's" aria-selected={AnnouncementCategory.FOLLOWED === selectedCategory} />
+          <StyledTab label="Your's" aria-selected={ChatCategory.FOLLOWED === selectedCategory} />
         )}
       </Tabs>
+      <ChatComponent />
     </Container>
   )
 }
@@ -76,7 +70,7 @@ const Title = styled(Typography)`
   margin-bottom: 20px;
 `
 
-const Announcements = styled('div')`
+const Chats = styled('div')`
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -84,7 +78,7 @@ const Announcements = styled('div')`
   margin-top: 20px;
 `
 
-const EmptyAnnouncementsText = styled(Typography)`
+const EmptyChatsText = styled(Typography)`
   margin: 20px 0;
 `
 
@@ -96,7 +90,7 @@ const StyledTab = styled(Tab)`
     `}
 `
 
-const CreateAnnouncementButton = styled(Button)`
+const CreateChatButton = styled(Button)`
   padding: 30px;
   width: 500px;
   display: flex;
