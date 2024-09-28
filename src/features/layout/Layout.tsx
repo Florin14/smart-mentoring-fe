@@ -63,6 +63,6 @@ const Content = styled('div')`
   width: 90%;
   display: flex;
   align-self: center;
-  gap: 100px;
+  // gap: 100px;
   padding-top: 80px;
 `

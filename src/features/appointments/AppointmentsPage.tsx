@@ -47,7 +47,7 @@ const AppointmentsPage: React.FC = () => {
                 primary={`With ${
                   role === Role.STUDENT ? appointment.mentor.fullName : appointment.student.fullName
                 } - ${appointment.locationDetails}`}
-                secondary={appointment.date.format('LLL')}
+                secondary={appointment.date ? appointment.date.format('LLL') : ""}
               />
             </ListItem>
           ))}

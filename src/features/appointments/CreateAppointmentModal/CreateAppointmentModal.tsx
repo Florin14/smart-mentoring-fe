@@ -13,20 +13,17 @@ import { SubmitHandler, FormProvider, useController, useForm } from 'react-hook-
 import { InterestArea, Role } from '../../../types/User'
 import { FormInput } from '../../common/FormInput'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { selectInterestAreasOptions, selectInterestAreasOptionsLoading, selectUserData } from '../../account/selectors'
-import { fetchInterestAreasOptions } from '../../account/actions'
+import { selectInterestAreasOptionsLoading, selectUserData } from '../../account/selectors'
 import { LoadingOverlay } from '../../common/LoadingOverlay'
 import { createAppointment, updateAppointment } from '../actions'
 import { AppointmentResponseDto } from '../../../types/Appointment'
 import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined'
 import QueryBuilderOutlinedIcon from '@mui/icons-material/QueryBuilderOutlined'
 import StyledCalendar from '../../common/StyledCalendar/StyledCalendar'
+import dayjs from 'dayjs'
+
 export type CreateAppointmentType = {
-  id: number
-  title: string
-  interestArea: InterestArea
-  description: string
-  price: number
+  locationDetails: string
 }
 
 export enum DatetimeType {
@@ -52,6 +49,9 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   const role = localStorage.getItem('authorities')
   const dispatch = useAppDispatch()
 
+  const [appointmentDate, setAppointmentDate] = useState<any>(null)
+  const [isCalendarShown, setIsCalendarShown] = useState<boolean>(false)
+
   const formMethods = useForm<CreateAppointmentType>()
   const {
     control,
@@ -61,17 +61,9 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     reset,
     formState: { errors },
   } = formMethods
-  const interestAreasOptions = useAppSelector(selectInterestAreasOptions)
   const interestAreasOptionsLoading = useAppSelector(selectInterestAreasOptionsLoading)
 
-  const { field: title } = useController({ name: 'title', control })
-  const { field: price } = useController({ name: 'price', control })
-  const { field: interestArea } = useController({ name: 'interestArea', control })
-  const { field: description } = useController({
-    name: 'description',
-    control,
-    rules: { required: true },
-  })
+  const { field: locationDetails } = useController({ name: 'locationDetails', control, rules: { required: true } })
 
   const [datepickerType, setDatepickerType] = useState<DatetimeType>(DatetimeType.TODAY)
   const [timepickerType, setTimepickerType] = useState<DatetimeType>(DatetimeType.ANYTIME)
@@ -83,13 +75,13 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     }
   }, [appointment])
 
-  const handleAppointmentSubmit: SubmitHandler<CreateAppointmentType> = async formData => {
+  const handleAppointmentSubmit: SubmitHandler<any> = async formData => {
     if (!editMode) {
       dispatch(
         createAppointment({
-          studentId: 1,
-          mentorId: 2,
-          date: '2024-09-08',
+          studentId: 53,
+          mentorId: 1,
+          date: (appointmentDate && dayjs(appointmentDate).format('YYYY-MM-DD') + ' 18:00') || null,
           locationDetails: 'string',
         })
       ).then((res: any) => {
@@ -112,20 +104,15 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   }
 
   const handleCloseModal = () => {
-    reset({
-      title: '',
-      description: '',
-      interestArea: undefined,
-      price: undefined,
-    })
     handleClose()
+    setAppointmentDate(null)
   }
 
   // Shouldn't be the case; just making sure
   if (role !== Role.MENTOR) return null
 
   return (
-    <Dialog open={isOpened} onClose={handleCloseModal} disableScrollLock={true}>
+    <Dialog open={isOpened} onClose={handleCloseModal} disableScrollLock={false}>
       <LoadingOverlay visible={interestAreasOptionsLoading} />
       <StyledDialogTitle>{editMode ? 'Update' : 'Create'} Appointment</StyledDialogTitle>
       <FormProvider {...formMethods}>
@@ -133,8 +120,8 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
           <StyledDialogContent>
             <DialogInstructions>Fill in the details for {editMode ? 'this' : 'the new'} appointment</DialogInstructions>
             <FormInput
-              label="Title"
-              fieldName="title"
+              label="Location details"
+              fieldName="Location details"
               options={{
                 required: true,
                 minLength: {
@@ -143,10 +130,10 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
                 },
               }}
               onChange={newTitle => {
-                title.onChange(newTitle.target.value)
+                locationDetails.onChange(newTitle.target.value)
               }}
-              error={!!errors.title}
-              helperText={errors.title?.message}
+              error={!!errors.locationDetails}
+              helperText={errors.locationDetails?.message}
             />
             <DatepickerWrapper>
               <PickerTitleWrapper>
@@ -175,13 +162,20 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
                   isToChoose
                   onClick={() => {
                     setDatepickerType(DatetimeType.OTHER)
+                    setIsCalendarShown(!isCalendarShown)
                   }}
                 >
-                  Alege o data
+                  {appointmentDate ? dayjs(appointmentDate).format('DD.MM.YYYY') : 'Alege o data'}
                 </DateTimeToggle>
               </TogglesWrapper>
             </DatepickerWrapper>
-            {datepickerType === DatetimeType.OTHER && <StyledCalendar />}
+            {datepickerType === DatetimeType.OTHER && isCalendarShown && (
+              <StyledCalendar
+                setAppointmentDate={setAppointmentDate}
+                setIsCalendarShown={setIsCalendarShown}
+                appointmentDate={appointmentDate}
+              />
+            )}
             <TimepickerWrapper>
               <PickerTitleWrapper>
                 <QueryBuilderOutlinedIcon />
