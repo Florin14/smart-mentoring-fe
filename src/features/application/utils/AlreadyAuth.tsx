@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from 'react'
+import { FC, PropsWithChildren, useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 
 interface AlreadyAuthProps {
@@ -14,10 +14,13 @@ interface AlreadyAuthProps {
  */
 
 export const AlreadyAuth: FC<PropsWithChildren<AlreadyAuthProps>> = ({ children, redirectTo }) => {
-  const isAuthenticated = !!localStorage.getItem('jwtToken')
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('jwtToken'))
+  useEffect(() => {
+    setIsAuthenticated(!!localStorage.getItem('jwtToken'))
+  }, [localStorage.getItem('jwtToken')])
 
   if (isAuthenticated) {
-    return <Navigate to={"/"} />
+    return <Navigate to={'/profile'} />
   }
 
   return <>{children}</>
