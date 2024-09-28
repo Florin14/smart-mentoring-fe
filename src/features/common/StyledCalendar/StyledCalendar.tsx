@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import '../../../assets/css/StyledCalendar.css'
@@ -7,6 +7,8 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 
 import { Box, useStyleConfig } from '@chakra-ui/react'
+import { styled } from '@mui/material'
+
 const Card: React.FC = (props: any) => {
   const { variant, children, ...rest } = props
   const styles = useStyleConfig('Card', { variant })
@@ -18,24 +20,34 @@ const Card: React.FC = (props: any) => {
   )
 }
 
-const StyledDateCalendar: React.FC<any> = props => {
-  const { selectRange, ...rest } = props
-  const [value, onChange] = useState(new Date())
+const StyledCalendar: React.FC<any> = props => {
+  const { setAppointmentDate, setIsCalendarShown, appointmentDate, ...rest } = props
   return (
-    <Card align="center" direction="column" w="100%" maxW="max-content" p="20px 15px" h="max-content" {...rest}>
+    <CalendarCard {...rest}>
       <Calendar
         onChange={e => {
-          console.log(e)
+          setAppointmentDate(e)
+          setIsCalendarShown(false)
         }}
-        value={value}
-        selectRange={selectRange}
+        value={appointmentDate || new Date()}
         view={'month'}
         tileContent={<Text color="brand.500"></Text>}
         prevLabel={<Icon as={KeyboardArrowLeftIcon} w="24px" h="24px" mt="4px" />}
         nextLabel={<Icon as={KeyboardArrowRightIcon} w="24px" h="24px" mt="4px" />}
+        minDate={new Date()}
       />
-    </Card>
+    </CalendarCard>
   )
 }
 
-export default StyledDateCalendar
+export default StyledCalendar
+
+const CalendarCard = styled(Card)`
+  display: flex;
+  align-items: center;
+  flex-direction: column
+  width: 100%;
+  max-width: max-content;
+  padding: 20px 15px;
+  height: max-content;
+`

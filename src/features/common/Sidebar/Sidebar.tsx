@@ -2,7 +2,7 @@ import React from 'react'
 import { matchPath, useLocation } from 'react-router'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { alpha, css, List, ListItemButton, ListItemIcon, ListItemText, styled } from '@mui/material'
+import { alpha, Backdrop, css, List, ListItemButton, ListItemIcon, ListItemText, styled } from '@mui/material'
 import { toggleSidebar } from '../../application/slice'
 import { selectSidebarExpanded } from '../../application/selectors'
 
@@ -28,11 +28,11 @@ export const Sidebar: React.FC = () => {
   return (
     <Container>
       <ExpandableList expanded={sidebarExpanded}>
-        <CustomListItem onClick={() => dispatch(toggleSidebar())}>
+        <CustomToggleListItem onClick={() => dispatch(toggleSidebar())}>
           <ListItemIcon>
             <MenuIcon />
           </ListItemIcon>
-        </CustomListItem>
+        </CustomToggleListItem>
         <CustomListItem selected={activeItem(paths.ANNOUNCEMENTS)} onClick={() => navigate(paths.ANNOUNCEMENTS)}>
           <ListItemIcon>
             <NewspaperIcon />
@@ -64,12 +64,19 @@ export const Sidebar: React.FC = () => {
           <ListItemText primary="Chat" />
         </CustomListItem>
       </ExpandableList>
+
+      {/* <Backdrop open={sidebarExpanded} sx={{ zIndex: 1 }} /> */}
     </Container>
   )
 }
 
 const Container = styled('div')`
-  position: fixed;
+  position: relative;
+  width: fit-content;
+  zindex: 2;
+  @media only screen and (max-width: 900px) {
+    position: fixed;
+  }
 `
 
 const ExpandableList = styled(List, { shouldForwardProp: prop => prop !== 'expanded' })<{ expanded?: boolean }>`
@@ -85,4 +92,10 @@ const CustomListItem = styled(ListItemButton)`
     css`
       background: ${alpha(props.theme.palette.secondary.light, 0.2)} !important;
     `}
+`
+
+const CustomToggleListItem = styled(ListItemButton)`
+  @media only screen and (max-width: 900px) {
+    visibility: hidden;
+  }
 `

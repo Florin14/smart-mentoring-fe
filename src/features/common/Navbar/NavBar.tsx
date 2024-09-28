@@ -69,7 +69,6 @@ export const NavBar: React.FC = () => {
             <MenuIcon />
           </StyledIconButton>
           <FancyText variant="h5">Colectivistii</FancyText>
-          <DrawerComp />
         </>
       ) : (
         <NavContainer>
@@ -209,7 +208,7 @@ const LeftSection = styled('div')`
 `
 
 const StyledIconButton = styled(IconButton)`
-  color: #000;
+  color: rgba(0, 0, 0, 0.54);
 `
 
 const DropdownMenu = styled('div')<{ open: boolean }>`

@@ -26,7 +26,7 @@ const initialState: AppState = {
   registerComplete: false,
   loginLoading: false,
   loginComplete: false,
-  sidebarExpanded: true,
+  sidebarExpanded: false,
 }
 
 export const appSlice = createSlice({
