@@ -25,6 +25,7 @@ import { initialPictureURL } from '../../account/utils'
 import { selectUserAvatar } from '../../account/selectors'
 import { selectIsChatMenuOpen } from '../../chat/selectors'
 import { handleContactMenu } from '../../chat/slice'
+import ChatComponent from '../../chat/ChatComponent/ChatComponent'
 
 export const NavBar: React.FC = () => {
   const [showMessagesMenu, setShowMessagesMenu] = useState(false)
@@ -69,6 +70,30 @@ export const NavBar: React.FC = () => {
             <MenuIcon />
           </StyledIconButton>
           <FancyText variant="h5">Colectivistii</FancyText>
+          <Tooltip title="Messages">
+            <div ref={menuRef}>
+              <StyledIconButton
+                size="large"
+                onClick={() => {
+                  if (showMessagesMenu || isMenuOpen) {
+                    dispatch(handleContactMenu({ isOpen: false }))
+                    setShowMessagesMenu(false)
+                  } else {
+                    dispatch(handleContactMenu({ isOpen: true }))
+                    setShowMessagesMenu(true)
+                  }
+                }}
+              >
+                <MailIcon />
+              </StyledIconButton>
+            </div>
+          </Tooltip>
+          <Tooltip title="Sign out">
+            <StyledIconButton size="large" onClick={() => navigate('/logout')}>
+              <LogoutIcon />
+            </StyledIconButton>
+          </Tooltip>
+          <Picture src={getPictureSrc()} onClick={() => navigate('/profile')} />
         </>
       ) : (
         <NavContainer>
@@ -131,6 +156,7 @@ export const NavBar: React.FC = () => {
               id="fullWidth"
             ></SearchInput>
           </Search>
+          <ChatComponent />
           {/* <ItemsContainer>
             <InboxItem img="" text="">
               hello
@@ -221,8 +247,9 @@ const DropdownMenu = styled('div')<{ open: boolean }>`
   border-radius: 8px;
   padding: 20px;
   width: 300px;
-  height: 600px;
+  minheight: 600px;
   opacity: 0;
+  overflow: auto;
   visibility: hidden;
   transform: translateY(-30px);
   box-shadow: rgba(17, 17, 26, 0.1) 0 2px 8px, rgba(17, 17, 26, 0.05) 0 4px 16px;
