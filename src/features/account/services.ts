@@ -1,4 +1,4 @@
-import { InterestArea, Study, UserDto } from '../../types/User'
+import { BaseUser, InterestArea, Study, UserDto } from '../../types/User'
 import { axiosInstance } from '../../api'
 import { AxiosResponse } from 'axios'
 import { Response } from '../../types/Response'
@@ -18,6 +18,9 @@ export const fetchCompletedStudiesOptionsCall = async (): Promise<AxiosResponse<
 
 export const fetchInterestAreasOptionsCall = async (): Promise<AxiosResponse<Response<InterestArea[]>>> =>
   axiosInstance.get('/interest-areas')
+
+export const fetchStudentsCall = async (): Promise<AxiosResponse<Response<BaseUser[]>>> =>
+  axiosInstance.get('/students')
 
 export const createInterestAreaCall = async (
   interestArea: InterestAreaRequestDto
