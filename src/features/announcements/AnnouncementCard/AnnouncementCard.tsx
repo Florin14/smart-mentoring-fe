@@ -35,15 +35,17 @@ export const AnnouncementCard: React.FC<AnnouncementsCardProps> = props => {
 
   const handleDelete = () => {
     dispatch(deleteAnnouncement(id)).then(() => {
-      dispatch(
-        displaySnackbar({
-          open: true,
-          type: 'success',
-          message: 'Ad deleted',
-        })
-      )
+      dispatch(fetchAnnouncements()).then(() => {
+        dispatch(
+          displaySnackbar({
+            open: true,
+            type: 'success',
+            message: 'Ad deleted',
+          })
+        )
+      })
+
     })
-    dispatch(fetchAnnouncements())
   }
 
   return (
@@ -88,13 +90,22 @@ export const AnnouncementCard: React.FC<AnnouncementsCardProps> = props => {
             </ActionButtons>
           </>
         )}
-        {!isMentor && (
+        {/* {!isMentor && (
           <ViewProfileButton
             onClick={() => {
               dispatch(handleContactMenu({ isOpen: true }))
             }}
           >
             Contact
+          </ViewProfileButton>
+        )} */}
+        {!isMentor && (
+          <ViewProfileButton
+            onClick={() => {
+              // dispatch(handleContactMenu({ isOpen: true }))
+            }}
+          >
+            Attend
           </ViewProfileButton>
         )}
       </Footer>

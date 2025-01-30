@@ -131,6 +131,7 @@ const ProfilePage: React.FC = () => {
                   message: 'Full name should be min 3 characters long',
                 },
               }}
+              placeholder={userData?.fullName}
               error={!!errors.fullName}
               helperText={errors.fullName?.message}
             />

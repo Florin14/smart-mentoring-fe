@@ -9,7 +9,7 @@ import {
   styled,
   TextField,
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormProvider, SubmitHandler, useController, useForm } from 'react-hook-form'
 import { BaseUser, Role } from '../../../types/User'
 import { FormInput } from '../../common/FormInput'
@@ -21,6 +21,7 @@ import { Assignment, AssignmentRequestDto } from '../../../types/Assignment'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { selectUserData } from '../../account/selectors'
 import { createAssignment, updateAssignment } from '../actions'
+import { fetchStudents } from '../../account/actions'
 
 dayjs.extend(isSameOrAfter)
 
@@ -50,6 +51,7 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
   const dispatch = useAppDispatch()
   const userData = useAppSelector(selectUserData)
   const role = localStorage.getItem('authorities')
+  const [studentsOptions, setUsersOptions] = useState();
   // const now = dayjs()
 
   const formMethods = useForm<CreateAssignmentType>()
@@ -82,6 +84,13 @@ export const CreateAssignmentModal: React.FC<CreateAssignmentModalProps> = ({
       validate: deadlineValue => deadlineValue.isAfter(startDateField.value) || 'Deadline should be after Start Date',
     },
   })
+
+  useEffect(() => {
+    if (isOpened)
+      dispatch(fetchStudents()).then((res) => {
+        console.log(res);
+      })
+  }, [isOpened])
 
   useEffect(() => {
     // Fill with pre-existing data when updating

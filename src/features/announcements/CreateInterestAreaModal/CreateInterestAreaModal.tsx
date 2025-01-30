@@ -4,7 +4,7 @@ import { SubmitHandler, FormProvider, useController, useForm } from 'react-hook-
 import { Role } from '../../../types/User'
 import { FormInput } from '../../common/FormInput'
 import { useAppDispatch } from '../../../redux/hooks'
-import { addInterestArea, updateInterestArea } from '../../account/actions'
+import { addInterestArea, fetchInterestAreasOptions, updateInterestArea } from '../../account/actions'
 import { InterestAreasResponseDTO } from '../../../types/InterestAreas'
 
 export type CreateInterestAreaType = {
@@ -59,6 +59,7 @@ export const CreateInterestAreaModal: React.FC<CreateInterestAreaModalProps> = (
         })
       ).then(res => {
         if (res?.meta?.requestStatus === 'fulfilled') {
+          dispatch(fetchInterestAreasOptions())
           handleClose()
         }
       })
@@ -69,6 +70,7 @@ export const CreateInterestAreaModal: React.FC<CreateInterestAreaModalProps> = (
         })
       ).then(res => {
         if (res?.meta?.requestStatus === 'fulfilled') {
+          dispatch(fetchInterestAreasOptions())
           handleClose()
         }
       })

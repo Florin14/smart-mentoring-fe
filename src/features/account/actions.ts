@@ -3,6 +3,7 @@ import {
   createInterestAreaCall,
   fetchCompletedStudiesOptionsCall,
   fetchInterestAreasOptionsCall,
+  fetchStudentsCall,
   fetchUserAvatarCall,
   fetchUserCall,
   updateInterestAreaCall,
@@ -39,9 +40,9 @@ export const updateUserAvatar = createAsyncThunk(
   }
 )
 
-export const fetchUserAvatar = createAsyncThunk('fetchUserAvatar', async ( _, { dispatch }) => {
+export const fetchUserAvatar = createAsyncThunk('fetchUserAvatar', async (_, { dispatch }) => {
   const response = await fetchUserAvatarCall()
-  dispatch(updateAvatar({profilePicture: response.data.data.profilePicture}))
+  dispatch(updateAvatar({ profilePicture: response.data.data.profilePicture }))
   return response.data.data.profilePicture
 })
 
@@ -55,6 +56,12 @@ export const fetchInterestAreasOptions = createAsyncThunk('fetchInterestAreasOpt
   const response = await fetchInterestAreasOptionsCall()
 
   return response.data.data
+})
+
+export const fetchStudents = createAsyncThunk('fetchStudents', async () => {
+  const response = await fetchStudentsCall()
+  console.log(response.data);
+  return response.data
 })
 
 export const addInterestArea = createAsyncThunk('addInterestArea', async (interestArea: InterestAreaRequestDto) => {

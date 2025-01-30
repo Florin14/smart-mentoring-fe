@@ -69,36 +69,38 @@ export const NavBar: React.FC = () => {
           <StyledIconButton size="large" onClick={() => dispatch(toggleSidebar())}>
             <MenuIcon />
           </StyledIconButton>
-          <FancyText variant="h5">Colectivistii</FancyText>
-          <Tooltip title="Messages">
-            <div ref={menuRef}>
-              <StyledIconButton
-                size="large"
-                onClick={() => {
-                  if (showMessagesMenu || isMenuOpen) {
-                    dispatch(handleContactMenu({ isOpen: false }))
-                    setShowMessagesMenu(false)
-                  } else {
-                    dispatch(handleContactMenu({ isOpen: true }))
-                    setShowMessagesMenu(true)
-                  }
-                }}
-              >
-                <MailIcon />
+          <FancyText variant="h5">Smart Mentoring</FancyText>
+          <RightSection>
+            <Tooltip title="Messages">
+              <div ref={menuRef}>
+                <StyledIconButton
+                  size="large"
+                  onClick={() => {
+                    if (showMessagesMenu || isMenuOpen) {
+                      dispatch(handleContactMenu({ isOpen: false }))
+                      setShowMessagesMenu(false)
+                    } else {
+                      dispatch(handleContactMenu({ isOpen: true }))
+                      setShowMessagesMenu(true)
+                    }
+                  }}
+                >
+                  <MailIcon />
+                </StyledIconButton>
+              </div>
+            </Tooltip>
+            <Tooltip title="Sign out">
+              <StyledIconButton size="large" onClick={() => navigate('/logout')}>
+                <LogoutIcon />
               </StyledIconButton>
-            </div>
-          </Tooltip>
-          <Tooltip title="Sign out">
-            <StyledIconButton size="large" onClick={() => navigate('/logout')}>
-              <LogoutIcon />
-            </StyledIconButton>
-          </Tooltip>
-          <Picture src={getPictureSrc()} onClick={() => navigate('/profile')} />
+            </Tooltip>
+            <Picture src={getPictureSrc()} onClick={() => navigate('/profile')} />
+          </RightSection>
         </>
       ) : (
         <NavContainer>
           <LeftSection>
-            <FancyText variant="h5">Colectivistii</FancyText>
+            <FancyText variant="h5">Smart Mentoring</FancyText>
           </LeftSection>
           <SearchBar />
           <RightSection>
@@ -157,20 +159,6 @@ export const NavBar: React.FC = () => {
             ></SearchInput>
           </Search>
           <ChatComponent />
-          {/* <ItemsContainer>
-            <InboxItem img="" text="">
-              hello
-            </InboxItem>
-            <InboxItem img="" text="">
-              hello
-            </InboxItem>
-            <InboxItem img="" text="">
-              hello
-            </InboxItem>
-            <InboxItem img="" text="">
-              hello
-            </InboxItem>
-          </ItemsContainer> */}
         </DropdownMenu>
       )}
     </Container>
@@ -237,7 +225,7 @@ const StyledIconButton = styled(IconButton)`
   color: rgba(0, 0, 0, 0.54);
 `
 
-const DropdownMenu = styled('div')<{ open: boolean }>`
+const DropdownMenu = styled('div') <{ open: boolean }>`
   display: flex;
   flex-direction: column;
   position: absolute;

@@ -57,12 +57,12 @@ export const Sidebar: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Assignments" />
         </CustomListItem>
-        <CustomListItem selected={activeItem(paths.CHAT)} onClick={() => navigate(paths.CHAT)}>
+        {/* <CustomListItem selected={activeItem(paths.CHAT)} onClick={() => navigate(paths.CHAT)}>
           <ListItemIcon>
             <NoteAltIcon />
           </ListItemIcon>
           <ListItemText primary="Chat" />
-        </CustomListItem>
+        </CustomListItem> */}
       </ExpandableList>
 
       {/* <Backdrop open={sidebarExpanded} sx={{ zIndex: 1 }} /> */}
@@ -79,7 +79,7 @@ const Container = styled('div')`
   }
 `
 
-const ExpandableList = styled(List, { shouldForwardProp: prop => prop !== 'expanded' })<{ expanded?: boolean }>`
+const ExpandableList = styled(List, { shouldForwardProp: prop => prop !== 'expanded' }) <{ expanded?: boolean }>`
   transition: all 0.15s ease-in-out;
   overflow: hidden;
 
