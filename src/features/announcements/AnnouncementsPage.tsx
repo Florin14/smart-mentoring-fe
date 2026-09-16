@@ -8,7 +8,7 @@ import {
   selectAnnouncementsResultsSuccess,
 } from './selectors'
 import { fetchAnnouncements } from './actions'
-import { styled, Tabs, Tab, Typography, css, Button } from '@mui/material'
+import { alpha, styled, Tabs, Tab, Typography, css, Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 
 import { Loader } from '../common/Loader'
@@ -58,7 +58,7 @@ const AnnouncementsPage: React.FC = () => {
   }
 
   const myAnnouncements = announcementsData && [
-    ...announcementsData.filter(announcement => announcement.user.fullName === userData?.fullName),
+    ...announcementsData.filter(announcement => announcement.user?.fullName === userData?.fullName),
   ]
 
   const handleCategorySelection = (_event: React.SyntheticEvent, newSelectedCategory: AnnouncementCategory) => {
@@ -134,38 +134,55 @@ const Container = styled('div')`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding: 24px;
 `
 
 const Title = styled(Typography)`
-  font-weight: bold;
-  font-size: 24px;
+  font-weight: 700;
+  font-size: 28px;
+  color: #E8E8F0;
   margin-bottom: 20px;
+  letter-spacing: -0.01em;
 `
 
 const Announcements = styled('div')`
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  width: 600px;
-  margin-top: 20px;
+  gap: 24px;
+  width: 100%;
+  max-width: 700px;
+  margin-top: 24px;
 `
 
 const EmptyAnnouncementsText = styled(Typography)`
-  margin: 20px 0;
+  margin: 24px 0;
+  color: #9B9BB4;
 `
 
 const StyledTab = styled(Tab)`
+  color: #9B9BB4;
   ${props =>
     props['aria-selected'] &&
     css`
-      color: ${props.theme.palette.secondary.main} !important;
+      color: #6C63FF !important;
     `}
 `
 
 const CreateAnnouncementButton = styled(Button)`
-  padding: 30px;
-  width: 500px;
+  padding: 16px 32px;
+  width: 100%;
+  max-width: 500px;
   display: flex;
-  gap: 5px;
-  font-size: 16px;
+  gap: 8px;
+  font-size: 0.95rem;
+  border-color: ${alpha('#6C63FF', 0.4)};
+  color: #9D97FF;
+  border-radius: 16px;
+  border-style: dashed;
+  margin-bottom: 16px;
+  &:hover {
+    border-color: #6C63FF;
+    background: ${alpha('#6C63FF', 0.06)};
+    border-style: dashed;
+  }
 `

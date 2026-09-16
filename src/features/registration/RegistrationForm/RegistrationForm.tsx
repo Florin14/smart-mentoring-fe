@@ -9,8 +9,10 @@ import {
   RadioGroup,
   Radio,
   css,
+  alpha,
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt'
 
 import { SubmitHandler, useController, useForm } from 'react-hook-form'
 
@@ -59,27 +61,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ loginClick }
     })
   }
 
-  // Wire to backend endpoint using RTK (create a slice etc.)
-  // Note: handleRegistrationSubmit accepts formData as a parameter
   const handleRegistrationSubmit: SubmitHandler<RegistrationFormType> = formData => {
-    // transform Form Data into User object
     const userData: RegisterUserDTO = {
-      username: formData.email,
+      email: formData.email,
       fullName: formData.fullName,
       role: formData.role,
       password: formData.password,
     }
 
-    // API call to '/register'
     dispatch(addUser(userData)).then(response => {
       if (response.type === 'addUser/fulfilled') {
-        // empty all fields after submitting
         resetForm()
-
-        // Move back to log in after successfully registering
         loginClick()
-
-        // make sure to reset loading / complete status for registration action
         dispatch(resetAuthState())
       }
     })
@@ -93,7 +86,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ loginClick }
   return (
     <Container>
       <ArrowBack onClick={goToLogin} />
+      <IconWrapper>
+        <PersonAddAltIcon sx={{ fontSize: 28, color: '#00D68F' }} />
+      </IconWrapper>
       <FormTitle variant="h4">Sign Up</FormTitle>
+      <FormSubtitle variant="body2">Create your account to get started</FormSubtitle>
       <FormWrapper onSubmit={handleSubmit(handleRegistrationSubmit)}>
         <TextFieldGroup>
           <StyledTextField
@@ -101,7 +98,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ loginClick }
             label="Full Name"
             error={!!errors.fullName}
             helperText={errors.fullName?.message}
-            color="secondary"
             variant="filled"
             size="small"
           />
@@ -116,7 +112,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ loginClick }
             label="Email"
             error={!!errors.email}
             helperText={errors.email?.message}
-            color="secondary"
             variant="filled"
             size="small"
           />
@@ -132,7 +127,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ loginClick }
           helperText={errors.password?.message}
           size="small"
           variant="filled"
-          color="secondary"
           fullWidth
         />
         <StyledTextField
@@ -149,19 +143,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ loginClick }
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword?.message}
           size="small"
-          color="secondary"
           variant="filled"
           fullWidth
         />
-        <FormLabel>I want to participate as</FormLabel>
-        <RadioGroup value={roleField.value}>
+        <RoleLabel>I want to participate as</RoleLabel>
+        <StyledRadioGroup value={roleField.value}>
           <FormControlLabel
             onChange={() => {
               roleField.onChange(Role.STUDENT)
               roleField.onBlur()
             }}
             value={Role.STUDENT}
-            control={<Radio size="small" color="secondary" />}
+            control={<Radio size="small" sx={{ color: '#6C63FF', '&.Mui-checked': { color: '#6C63FF' } }} />}
             label="Student"
           />
           <FormControlLabel
@@ -170,12 +163,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ loginClick }
               roleField.onBlur()
             }}
             value={Role.MENTOR}
-            control={<Radio size="small" color="secondary" />}
+            control={<Radio size="small" sx={{ color: '#FF6B9D', '&.Mui-checked': { color: '#FF6B9D' } }} />}
             label="Mentor"
           />
-        </RadioGroup>
+        </StyledRadioGroup>
 
-        <RegisterButton variant="contained" color="success" type="submit">
+        <RegisterButton variant="contained" type="submit">
           Create Account
         </RegisterButton>
       </FormWrapper>
@@ -187,10 +180,28 @@ const Container = styled('div')`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 25px;
-  background: #f4f4f4;
-  box-shadow: rgba(0, 0, 0, 0.16) 0 10px 36px 0, rgba(0, 0, 0, 0.06) 0 0 0 1px;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 36px;
+  background: ${alpha('#131738', 0.85)};
+  backdrop-filter: blur(24px);
+  border: 1px solid ${alpha('#6C63FF', 0.12)};
+  border-radius: 24px;
+  box-shadow:
+    0 32px 64px -12px ${alpha('#000', 0.4)},
+    0 0 1px 0 ${alpha('#6C63FF', 0.3)};
+  min-width: 380px;
+`
+
+const IconWrapper = styled('div')`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, ${alpha('#00D68F', 0.15)} 0%, ${alpha('#6C63FF', 0.1)} 100%);
+  margin-bottom: 4px;
 `
 
 const FormWrapper = styled('form')`
@@ -202,51 +213,68 @@ const FormWrapper = styled('form')`
 
 const FormTitle = styled(Typography)`
   text-align: center;
-  margin-bottom: 15px;
-  font-weight: bold;
+  font-weight: 700;
+  color: #E8E8F0;
+`
+
+const FormSubtitle = styled(Typography)`
+  color: #9B9BB4;
+  margin-bottom: 8px;
 `
 
 const ArrowBack = styled(ArrowBackIcon)`
   position: absolute;
-  top: 30px;
-  left: 30px;
+  top: 24px;
+  left: 24px;
   cursor: pointer;
-
-  width: 30px;
-  height: 30px;
-
-  transition: color 0.1s ease-in;
+  width: 28px;
+  height: 28px;
+  color: #9B9BB4;
+  transition: all 0.2s ease;
+  padding: 4px;
+  border-radius: 8px;
 
   :hover {
-    color: #f7941d;
+    color: #6C63FF;
+    background: ${alpha('#6C63FF', 0.1)};
   }
 `
 
 const TextFieldGroup = styled('div')`
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: 16px;
 `
 
 const StyledTextField = styled(TextField)`
   ${props =>
     !props.error &&
     css`
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     `}
 `
 
-// Note: Keeping this here in case we need it somewhere else
-//
-// const StyledCheckbox = styled(Checkbox)`
-//   ${props =>
-//     props.color === 'error' &&
-//     css`
-//       color: ${props.theme.palette.error.main};
-//     `}
-// `
+const RoleLabel = styled(FormLabel)`
+  color: #9B9BB4;
+  font-size: 0.9rem;
+  margin-top: 8px;
+`
+
+const StyledRadioGroup = styled(RadioGroup)`
+  .MuiFormControlLabel-label {
+    color: #E8E8F0;
+    font-size: 0.9rem;
+  }
+`
 
 const RegisterButton = styled(Button)`
-  margin-top: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, #00D68F 0%, #00B87A 100%);
   color: white;
+  &:hover {
+    background: linear-gradient(135deg, #00E69A 0%, #00D68F 100%);
+    box-shadow: 0 12px 30px -8px ${alpha('#00D68F', 0.5)};
+  }
 `

@@ -16,34 +16,37 @@ export const Layout: React.FC = () => {
 
   const userData = useAppSelector(selectUserData)
   useEffect(() => {
-    if(!userData) {
+    if (!userData) {
       dispatch(fetchUserData())
     }
-
   }, [userData])
 
-  if (!isAuthenticated) {
-    dispatch(
-      displaySnackbar({
-        open: true,
-        type: 'warning',
-        message: 'You do not have permission to access this page',
-      })
-    )
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(
+        displaySnackbar({
+          open: true,
+          type: 'warning',
+          message: 'You do not have permission to access this page',
+        })
+      )
+    }
+  }, [isAuthenticated])
 
+  if (!isAuthenticated) {
     return <Navigate to={paths.LANDING_PAGE} />
   }
 
   return (
     <LoadingScreen>
       <Page>
-        <Container>
-          <NavBar />
-          <Content>
-            <Sidebar />
+        <NavBar />
+        <Content>
+          <Sidebar />
+          <MainContent>
             <Outlet />
-          </Content>
-        </Container>
+          </MainContent>
+        </Content>
       </Page>
     </LoadingScreen>
   )
@@ -51,18 +54,20 @@ export const Layout: React.FC = () => {
 
 const Page = styled('div')`
   width: 100%;
-`
-
-const Container = styled('div')`
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+  min-height: 100vh;
+  background: #0A0E27;
 `
 
 const Content = styled('div')`
-  width: 90%;
+  width: 92%;
+  max-width: 1400px;
   display: flex;
-  align-self: center;
-  // gap: 100px;
-  padding-top: 80px;
+  margin: 0 auto;
+  padding-top: 88px;
+  gap: 24px;
+`
+
+const MainContent = styled('div')`
+  flex: 1;
+  min-width: 0;
 `

@@ -117,14 +117,20 @@ const Wrapper = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
-  gap: 5px;
+  padding: 24px;
+  gap: 8px;
   width: 100%;
-  height: 250px;
-  // WIP design
-  box-shadow: rgba(17, 17, 26, 0.1) 0 2px 8px, rgba(17, 17, 26, 0.05) 0 4px 16px;
-  background: ${props => alpha(props.theme.palette.secondary.main, 0.05)};
-  border-radius: 4px;
+  min-height: 240px;
+  background: ${alpha('#131738', 0.6)};
+  backdrop-filter: blur(12px);
+  border: 1px solid ${alpha('#6C63FF', 0.1)};
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover {
+    border-color: ${alpha('#6C63FF', 0.25)};
+    box-shadow: 0 20px 40px -12px ${alpha('#6C63FF', 0.15)};
+    transform: translateY(-2px);
+  }
 `
 
 const Header = styled('div')`
@@ -134,62 +140,90 @@ const Header = styled('div')`
 `
 
 const Body = styled('div')`
-  height: 150px;
-  padding: 10px 0;
+  flex: 1;
+  padding: 8px 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #9B9BB4;
 `
 
 const Footer = styled('div')`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid ${alpha('#6C63FF', 0.08)};
 `
 
 const Title = styled(Typography)`
-  font-weight: bold;
+  font-weight: 700;
+  color: #E8E8F0;
 `
 
 const Fullname = styled(Typography)`
-  font-weight: bold;
+  font-weight: 600;
+  color: #E8E8F0;
 `
 
 const InterestArea = styled(Typography)`
-  font-weight: bold;
+  font-weight: 500;
   font-style: italic;
+  color: #9D97FF;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  background: ${alpha('#6C63FF', 0.1)};
+  border-radius: 8px;
 `
 
 const ActionButtons = styled('div')`
   display: flex;
+  gap: 4px;
+  .MuiIconButton-root {
+    color: #9B9BB4;
+    &:hover {
+      color: #6C63FF;
+      background: ${alpha('#6C63FF', 0.1)};
+    }
+  }
 `
 
 const Section = styled('div')`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `
 
 const AnnouncementUserAvatar = styled(Avatar)`
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid ${alpha('#6C63FF', 0.2)};
 `
 
 const Profile = styled('div')`
   display: flex;
-  gap: 10px;
-  margin-left: 5px;
+  gap: 12px;
+  align-items: center;
 `
 
 const NameSection = styled('div')`
   display: flex;
   flex-flow: column wrap;
+  .MuiTypography-body2:last-child {
+    color: #9B9BB4;
+    font-size: 0.8rem;
+  }
 `
 
 const ViewProfileButton = styled(Button)`
-  background: #eea247;
-  color: ${props => props.theme.palette.common.white};
+  background: linear-gradient(135deg, #6C63FF 0%, #FF6B9D 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 6px 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
   :hover {
-    background: #f0bf84;
-    color: ${props => props.theme.palette.common.white};
+    background: linear-gradient(135deg, #7B73FF 0%, #FF7DAD 100%);
+    box-shadow: 0 8px 20px -6px ${alpha('#6C63FF', 0.4)};
   }
 `

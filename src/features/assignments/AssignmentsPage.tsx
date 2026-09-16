@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { styled, Tabs, Tab, Typography, css, Button } from '@mui/material'
+import { alpha, styled, Tabs, Tab, Typography, css, Button } from '@mui/material'
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import {
@@ -241,41 +241,57 @@ const Container = styled('div')`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding-bottom: 200px;
+  padding: 24px;
+  padding-bottom: 120px;
 `
 
 const Title = styled(Typography)`
-  font-weight: bold;
-  font-size: 24px;
+  font-weight: 700;
+  font-size: 28px;
+  color: #E8E8F0;
+  letter-spacing: -0.01em;
 `
 
 const Assignments = styled('div')`
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  width: 600px;
-  margin-top: 20px;
+  gap: 24px;
+  width: 100%;
+  max-width: 700px;
+  margin-top: 24px;
 `
 
 const EmptyAssignmentsText = styled(Typography)`
-  margin: 20px 0;
+  margin: 24px 0;
+  color: #9B9BB4;
 `
 
 const StyledTab = styled(Tab)`
+  color: #9B9BB4;
   ${props =>
     props['aria-selected'] &&
     css`
-      color: ${props.theme.palette.secondary.main} !important;
+      color: #6C63FF !important;
     `}
 `
 
 const CreateAssignmentButton = styled(Button)`
-  margin: 45px 0;
-  padding: 30px;
-  width: 500px;
+  margin: 24px 0;
+  padding: 16px 32px;
+  width: 100%;
+  max-width: 500px;
   display: flex;
-  gap: 5px;
-  font-size: 16px;
+  gap: 8px;
+  font-size: 0.95rem;
+  border-color: ${alpha('#6C63FF', 0.4)};
+  color: #9D97FF;
+  border-radius: 16px;
+  border-style: dashed;
+  &:hover {
+    border-color: #6C63FF;
+    background: ${alpha('#6C63FF', 0.06)};
+    border-style: dashed;
+  }
 `
 
 export default AssignmentsPage

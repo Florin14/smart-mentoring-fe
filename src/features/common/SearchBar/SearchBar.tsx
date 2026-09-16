@@ -1,10 +1,10 @@
-import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
 import SearchSharpIcon from '@mui/icons-material/SearchSharp'
-import { styled, Input } from '@mui/material'
+import { alpha, styled, Input } from '@mui/material'
 import { useNavigate } from 'react-router'
 import { paths } from '../../../api'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { fetchAnnouncements, fetchFilterAnnouncements } from '../../announcements/actions'
+import { fetchFilterAnnouncements } from '../../announcements/actions'
 import {
   selectAnnouncementsData,
   selectAnnouncementsResultsError,
@@ -20,11 +20,6 @@ export const SearchBar: React.FC = () => {
   const resultsAnnouncementsLoading = useAppSelector(selectAnnouncementsResultsLoading)
   const resultsAnnouncementsError = useAppSelector(selectAnnouncementsResultsError)
   const resultsAnnouncementsData = useAppSelector(selectAnnouncementsData)
-
-  // Load announcements data on page load
-  // useEffect(() => {
-  //   dispatch(fetchAnnouncements())
-  // }, [dispatch])
 
   if (resultsAnnouncementsLoading) {
     return <Loader fullscreen={true} />
@@ -49,7 +44,7 @@ export const SearchBar: React.FC = () => {
     <Container>
       <SearchIcon />
       <SearchInput
-        placeholder="Search Announcements..."
+        placeholder="Search announcements..."
         onChange={handleSearchInputChange}
         onKeyDown={handleSearchSubmit}
         disableUnderline={true}
@@ -61,25 +56,34 @@ export const SearchBar: React.FC = () => {
 const Container = styled('div')`
   display: flex;
   align-items: center;
-  background-color: #eea247;
-  height: 2.5rem;
-  min-width: 35%;
-  order: 1;
+  background: ${alpha('#6C63FF', 0.08)};
+  border: 1px solid ${alpha('#6C63FF', 0.15)};
+  border-radius: 12px;
+  height: 40px;
+  min-width: 320px;
+  padding: 0 12px;
+  transition: all 0.2s ease;
+  &:focus-within {
+    border-color: ${alpha('#6C63FF', 0.4)};
+    background: ${alpha('#6C63FF', 0.12)};
+    box-shadow: 0 0 0 3px ${alpha('#6C63FF', 0.1)};
+  }
 `
 
 const SearchInput = styled(Input)`
-  width: 75%;
-  input,
-  label {
-    color: ${props => props.theme.palette.common.black};
-    font-weight: bold;
-  }
-  fieldset {
-    color: ${props => props.theme.palette.common.black};
+  flex: 1;
+  input {
+    color: #E8E8F0;
+    font-size: 0.9rem;
+    &::placeholder {
+      color: #9B9BB4;
+      opacity: 1;
+    }
   }
 `
 
 const SearchIcon = styled(SearchSharpIcon)`
-  width: 10%;
-  color: ${props => props.theme.palette.common.black};
+  color: #9B9BB4;
+  font-size: 20px;
+  margin-right: 8px;
 `

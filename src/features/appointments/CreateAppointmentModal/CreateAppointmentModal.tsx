@@ -1,4 +1,5 @@
 import {
+  alpha,
   Button,
   Dialog,
   DialogActions,
@@ -218,27 +219,34 @@ export const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
 
 const FormWrapper = styled('form')`
   gap: 4px;
-  width: 500px;
+  width: 520px;
 `
 
 const StyledDialogTitle = styled(DialogTitle)`
-  background: #ddd;
+  background: linear-gradient(135deg, ${alpha('#6C63FF', 0.1)} 0%, ${alpha('#FF6B9D', 0.06)} 100%);
+  color: #E8E8F0;
+  font-weight: 700;
+  text-align: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid ${alpha('#6C63FF', 0.1)};
 `
 
 const StyledDialogContent = styled(DialogContent)`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 24px !important;
 `
 
 const DialogInstructions = styled(DialogContentText)`
-  margin-bottom: 15px;
+  margin-bottom: 8px;
+  color: #9B9BB4;
 `
 
 const DatepickerWrapper = styled('div')`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
   width: 100%;
 `
 
@@ -246,37 +254,53 @@ const TimepickerWrapper = styled('div')`
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 8px;
 `
 
 const PickerTitleWrapper = styled('div')`
   display: flex;
   width: 100%;
-  gap: 5px;
+  gap: 8px;
+  align-items: center;
+  color: #9B9BB4;
 `
 
-const PickerTitle = styled(Typography)``
+const PickerTitle = styled(Typography)`
+  color: #E8E8F0;
+  font-weight: 500;
+  font-size: 0.9rem;
+`
 
 const DateTimeToggle = styled('div')<{ selected: boolean; isToChoose?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid ${props => (props.selected ? props.theme.palette.secondary.main : '#d1d1d1')};
-  height: 40px;
-  border-radius: 4px;
-  color: ${props => (props.selected ? 'black' : '#d1d1d1')};
+  border: 1px solid ${props => (props.selected ? '#6C63FF' : alpha('#6C63FF', 0.2))};
+  background: ${props => (props.selected ? alpha('#6C63FF', 0.1) : 'transparent')};
+  height: 42px;
+  border-radius: 12px;
+  color: ${props => (props.selected ? '#E8E8F0' : '#9B9BB4')};
   cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
   position: relative;
+
+  &:hover {
+    border-color: ${alpha('#6C63FF', 0.4)};
+    background: ${alpha('#6C63FF', 0.06)};
+  }
 
   &::after {
     content: '';
     display: ${props => (props.selected && props.isToChoose ? 'block' : 'none')};
     position: absolute;
-    bottom: -5px;
+    bottom: -6px;
     width: 0;
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid ${props => props.theme.palette.secondary.main};
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #6C63FF;
   }
 `
 

@@ -5,5 +5,11 @@ import { authenticate } from '../application/slice'
 
 export const authenticateUser = createAsyncThunk('authenticateUser', async (user: LoginUserDTO, { dispatch }) => {
   const response = await loginCall(user)
-  dispatch(authenticate({ jwtToken: response.data.value, email: response.data.email, authorities: response.data.authorities }))
+  dispatch(
+    authenticate({
+      jwtToken: response.data.token,
+      email: response.data.email,
+      authorities: [response.data.role],
+    })
+  )
 })

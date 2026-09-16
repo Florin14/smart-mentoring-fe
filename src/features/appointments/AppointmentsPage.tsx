@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { fetchAppointments } from './actions'
-import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText, styled, Typography } from '@mui/material'
+import { alpha, Avatar, Button, List, ListItem, ListItemAvatar, ListItemText, styled, Typography } from '@mui/material'
 
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled'
+import AddIcon from '@mui/icons-material/Add'
 import { selectAppointmentsData } from './selectors'
 import { Role } from '../../types/User'
-import AddIcon from '@mui/icons-material/Add'
 import { CreateAppointmentModal } from './CreateAppointmentModal'
 
 const AppointmentsPage: React.FC = () => {
@@ -19,7 +19,6 @@ const AppointmentsPage: React.FC = () => {
     dispatch(fetchAppointments())
   }, [])
 
-  // TODO: Implement create appointment
   const [isCreateAppointmentModalOpen, setIsCreateAppointmentModalOpen] = useState(false)
 
   return (
@@ -28,30 +27,31 @@ const AppointmentsPage: React.FC = () => {
       {role === Role.MENTOR && (
         <CreateAppointmentButton
           variant="outlined"
-          color="secondary"
           onClick={() => setIsCreateAppointmentModalOpen(true)}
         >
           <AddIcon /> Create Appointment
         </CreateAppointmentButton>
       )}
       <ListWrapper>
-        <List sx={{ width: '100%', maxWidth: 450, bgcolor: 'background.paper' }}>
+        <StyledList>
           {appointments.map(appointment => (
-            <ListItem key={appointment.id}>
+            <AppointmentItem key={appointment.id}>
               <ListItemAvatar>
-                <Avatar>
-                  <AccessTimeFilledIcon />
-                </Avatar>
+                <StyledAvatar>
+                  <AccessTimeFilledIcon sx={{ fontSize: 20 }} />
+                </StyledAvatar>
               </ListItemAvatar>
               <ListItemText
                 primary={`With ${
-                  role === Role.STUDENT ? appointment.mentor.fullName : appointment.student.fullName
+                  role === Role.STUDENT ? appointment.mentor?.fullName : appointment.student?.fullName
                 } - ${appointment.locationDetails}`}
-                secondary={appointment.date ? appointment.date.format('LLL') : ""}
+                secondary={appointment.date ? appointment.date.format('LLL') : ''}
+                primaryTypographyProps={{ color: '#E8E8F0', fontWeight: 500 }}
+                secondaryTypographyProps={{ color: '#9B9BB4' }}
               />
-            </ListItem>
+            </AppointmentItem>
           ))}
-        </List>
+        </StyledList>
       </ListWrapper>
       <CreateAppointmentModal
         isOpened={isCreateAppointmentModalOpen}
@@ -68,24 +68,64 @@ const Container = styled('div')`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding: 24px;
 `
 
 const Title = styled(Typography)`
-  font-weight: bold;
-  font-size: 24px;
+  font-weight: 700;
+  font-size: 28px;
+  color: #E8E8F0;
+  letter-spacing: -0.01em;
 `
 
 const CreateAppointmentButton = styled(Button)`
-  margin: 45px 0;
-  padding: 30px;
-  width: 500px;
+  margin: 24px 0;
+  padding: 16px 32px;
+  width: 100%;
+  max-width: 500px;
   display: flex;
-  gap: 5px;
-  font-size: 16px;
+  gap: 8px;
+  font-size: 0.95rem;
+  border-color: ${alpha('#6C63FF', 0.4)};
+  color: #9D97FF;
+  border-radius: 16px;
+  border-style: dashed;
+  &:hover {
+    border-color: #6C63FF;
+    background: ${alpha('#6C63FF', 0.06)};
+    border-style: dashed;
+  }
 `
 
 const ListWrapper = styled('div')`
-  width: 500px;
+  width: 100%;
+  max-width: 600px;
+`
+
+const StyledList = styled(List)`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`
+
+const AppointmentItem = styled(ListItem)`
+  background: ${alpha('#131738', 0.6)};
+  border: 1px solid ${alpha('#6C63FF', 0.1)};
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  &:hover {
+    border-color: ${alpha('#6C63FF', 0.25)};
+    background: ${alpha('#131738', 0.8)};
+  }
+`
+
+const StyledAvatar = styled(Avatar)`
+  background: linear-gradient(135deg, ${alpha('#6C63FF', 0.2)} 0%, ${alpha('#FF6B9D', 0.15)} 100%);
+  color: #9D97FF;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
 `
 
 export default AppointmentsPage

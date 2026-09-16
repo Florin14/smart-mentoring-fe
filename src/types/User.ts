@@ -37,7 +37,7 @@ export type UserDto = Partial<User>
 
 export interface RegisterUserDTO {
   fullName: string
-  username: string
+  email: string
   password: string
   role: Role
 }
@@ -48,13 +48,13 @@ export interface LoginUserDTO {
 }
 
 export interface LoginResponseBody {
-  value: string // JWT token
+  token: string
   email: string
-  authorities: string[]
+  role: string
 }
 
 export interface AuthProps {
   jwtToken: string
-  email: string, 
+  email: string
   authorities: string[]
 }

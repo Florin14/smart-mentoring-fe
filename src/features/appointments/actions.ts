@@ -6,7 +6,7 @@ import { AppointmentRequestDto } from '../../types/Appointment'
 export const fetchAppointments = createAsyncThunk('fetchAppointments', async () => {
   const response = await fetchAppointmentsCall()
 
-  return convertFromAppointmentsDto(response.data.data)
+  return convertFromAppointmentsDto(response.data)
 })
 
 export const createAppointment = createAsyncThunk('createAppointment', async (assignment: AppointmentRequestDto) => {

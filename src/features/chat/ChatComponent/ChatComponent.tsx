@@ -1,164 +1,199 @@
-import React, { useEffect, useState } from 'react'
-import { over } from 'stompjs'
-import SockJS from 'sockjs-client'
-import { styled } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { alpha, Avatar, IconButton, styled, TextField, Typography } from '@mui/material'
+import SendIcon from '@mui/icons-material/Send'
+import { useAppSelector } from '../../../redux/hooks'
+import { selectUserData } from '../../account/selectors'
 
-var stompClient: any = null
+interface ChatMessage {
+  id?: number
+  content: string
+  senderId: number
+  senderName: string
+  receiverId: number
+  timestamp: string
+  type?: string
+}
+
+interface Contact {
+  id: number
+  fullName: string
+}
+
 const ChatComponent: React.FC = () => {
-  const [privateChats, setPrivateChats] = useState(new Map())
-  const [tab, setTab] = useState('MESSAGE')
-  const [userData, setUserData] = useState({
-    username: '',
-    receivername: '',
-    connected: false,
-    message: '',
-  })
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [contacts, setContacts] = useState<Contact[]>([])
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
+  const [messageInput, setMessageInput] = useState('')
+  const [connected, setConnected] = useState(false)
+  const wsRef = useRef<WebSocket | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const userData = useAppSelector(selectUserData)
+
   useEffect(() => {
-    connect()
+    connectWebSocket()
+    fetchContacts()
+
+    return () => {
+      wsRef.current?.close()
+    }
   }, [])
 
-  const token = localStorage.getItem('jwtToken')
-  const connect = () => {
-    let Sock = new SockJS('http://localhost:8080/ws')
-    console.log(token)
-    stompClient = over(Sock)
-    stompClient.connect({ Authorization: `Bearer ${token}` }, onConnected, onError)
-  }
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
-  const onConnected = () => {
-    console.log(4135)
-    setUserData({ ...userData, connected: true })
-    stompClient.subscribe('/chatroom/public', onMessageReceived)
-    stompClient.subscribe('/user/' + userData.username + '/private', onPrivateMessage)
-    userJoin()
-  }
-
-  const userJoin = () => {
-    var chatMessage = {
-      senderId: 1,
-      receiverId: 53,
-      content: 'JOIN',
+  useEffect(() => {
+    if (selectedContact) {
+      fetchConversation(selectedContact.id)
     }
-    stompClient.send('/app/message', {}, JSON.stringify(chatMessage))
-  }
+  }, [selectedContact])
 
-  const onMessageReceived = (payload: any) => {
-    var payloadData: any = JSON.parse(payload.body)
-    switch (payloadData.status) {
-      case 'JOIN':
-        // if (!privateChats.keys() && !privateChats.get(payloadData.senderName)) {
-        //   privateChats.set(payloadData.senderName, [])
-        //   setPrivateChats(new Map(privateChats))
-        // }
-        break
+  const connectWebSocket = () => {
+    const token = localStorage.getItem('jwtToken')
+    if (!token) return
+
+    const wsUrl = `ws://localhost:8080/ws/chat?token=${token}`
+    const ws = new WebSocket(wsUrl)
+
+    ws.onopen = () => {
+      setConnected(true)
     }
-  }
 
-  const onPrivateMessage = (payload: any) => {
-    var payloadData = JSON.parse(payload.body)
-    // if (privateChats.get(payloadData.senderName)) {
-    //   privateChats.get(payloadData.senderName).push(payloadData)
-    //   setPrivateChats(new Map(privateChats))
-    // } else {
-    //   let list = []
-    //   list.push(payloadData)
-    //   privateChats.set(payloadData.senderName, list)
-    //   setPrivateChats(new Map(privateChats))
-    // }
-  }
-
-  const onError = (err: any) => {}
-
-  const handleMessage = (event: any) => {
-    const { value } = event.target
-    setUserData({ ...userData, message: value })
-  }
-  const sendValue = () => {
-    if (stompClient) {
-      var chatMessage = {
-        senderId: 1,
-        receiverId: 53,
-        content: 'MESSAGE',
+    ws.onmessage = (event) => {
+      const data: ChatMessage = JSON.parse(event.data)
+      if (data.type === 'message') {
+        setMessages(prev => [...prev, data])
       }
-      stompClient.send('/app/message', {}, JSON.stringify(chatMessage))
-      setUserData({ ...userData, message: '' })
+    }
+
+    ws.onclose = () => {
+      setConnected(false)
+      setTimeout(connectWebSocket, 3000)
+    }
+
+    ws.onerror = () => {
+      ws.close()
+    }
+
+    wsRef.current = ws
+  }
+
+  const fetchContacts = async () => {
+    try {
+      const { axiosInstance } = await import('../../../api')
+      const role = localStorage.getItem('authorities')
+      const endpoint = role === 'MENTOR' ? '/users/students' : '/users/mentors'
+      const response = await axiosInstance.get(endpoint)
+      setContacts(response.data || [])
+    } catch {
+      setContacts([])
     }
   }
 
-  const sendPrivateValue = () => {
-    if (stompClient) {
-      var chatMessage = {
-        senderId: 1,
-        receiverId: 53,
-        content: userData.message,
-      }
-
-      if (userData.username !== tab) {
-        // privateChats.get(tab).push(chatMessage)
-        setPrivateChats(new Map(privateChats))
-      }
-      stompClient.send('/app/private-message?receiverId=53', {}, JSON.stringify(chatMessage))
-      setUserData({ ...userData, message: '' })
+  const fetchConversation = async (otherUserId: number) => {
+    try {
+      const { axiosInstance } = await import('../../../api')
+      const response = await axiosInstance.get(`/messages/users/${otherUserId}`)
+      setMessages(response.data || [])
+    } catch {
+      setMessages([])
     }
   }
 
-  const handleUsername = (event: any) => {
-    const { value } = event.target
-    setUserData({ ...userData, username: value })
+  const sendMessage = () => {
+    if (!messageInput.trim() || !selectedContact || !wsRef.current || !userData) return
+
+    const msg = {
+      receiverId: selectedContact.id,
+      content: messageInput.trim(),
+    }
+
+    if (wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify(msg))
+      setMessages(prev => [
+        ...prev,
+        {
+          content: msg.content,
+          senderId: userData.id!,
+          senderName: userData.fullName || '',
+          receiverId: selectedContact.id,
+          timestamp: new Date().toISOString(),
+          type: 'message',
+        },
+      ])
+      setMessageInput('')
+    }
   }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
+  }
+
   return (
     <Container>
-      <ChatBox>
-        <MemberList>
-          <ul>
-            <li
-              onClick={() => {
-                setTab('CHATROOM')
-              }}
-              className={`member ${tab === 'CHATROOM' && 'active'}`}
-            >
-              Chatroom
-            </li>
-            {[...privateChats.keys()].map((name, index) => (
-              <li
-                onClick={() => {
-                  setTab(name)
-                }}
-                className={`member ${tab === name && 'active'}`}
-                key={index}
-              >
-                {name}
-              </li>
-            ))}
-          </ul>
-        </MemberList>
-        {tab !== 'CHATROOM' && (
-          <div className="chat-content">
-            <ul className="chat-messages">
-              {/* {[...privateChats.get(tab)].map((chat, index) => (
-                <li className={`message ${chat.senderName === userData.username && 'self'}`} key={index}>
-                  {chat.senderName !== userData.username && <div className="avatar">{chat.senderName}</div>}
-                  <div className="message-data">{chat.message}</div>
-                  {chat.senderName === userData.username && <div className="avatar self">{chat.senderName}</div>}
-                </li>
-              ))} */}
-            </ul>
+      <ContactList>
+        {contacts.length === 0 && <EmptyText>No contacts yet</EmptyText>}
+        {contacts.map(contact => (
+          <ContactItem
+            key={contact.id}
+            selected={selectedContact?.id === contact.id}
+            onClick={() => setSelectedContact(contact)}
+          >
+            <ContactAvatar>{contact.fullName?.charAt(0) || '?'}</ContactAvatar>
+            <ContactName>{contact.fullName}</ContactName>
+          </ContactItem>
+        ))}
+      </ContactList>
 
-            <div className="send-message">
-              <input
-                type="text"
-                className="input-message"
-                placeholder="enter the message"
-                value={userData.message}
-                onChange={handleMessage}
-              />
-              <button type="button" className="send-button" onClick={sendPrivateValue}>
-                send
-              </button>
-            </div>
-          </div>
-        )}
-      </ChatBox>
+      {selectedContact ? (
+        <ChatArea>
+          <ChatHeader>
+            <ContactAvatar sx={{ width: 32, height: 32, fontSize: '0.8rem' }}>
+              {selectedContact.fullName?.charAt(0)}
+            </ContactAvatar>
+            <Typography sx={{ fontWeight: 600, color: '#E8E8F0', fontSize: '0.9rem' }}>
+              {selectedContact.fullName}
+            </Typography>
+            <StatusDot connected={connected} />
+          </ChatHeader>
+
+          <MessagesList>
+            {messages.map((msg, idx) => (
+              <MessageBubble key={idx} isMine={msg.senderId === userData?.id}>
+                <MessageText>{msg.content}</MessageText>
+                <MessageTime>
+                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </MessageTime>
+              </MessageBubble>
+            ))}
+            <div ref={messagesEndRef} />
+          </MessagesList>
+
+          <InputArea>
+            <StyledInput
+              placeholder="Type a message..."
+              value={messageInput}
+              onChange={e => setMessageInput(e.target.value)}
+              onKeyDown={handleKeyPress}
+              size="small"
+              fullWidth
+              autoComplete="off"
+            />
+            <SendButton onClick={sendMessage} disabled={!messageInput.trim()}>
+              <SendIcon sx={{ fontSize: 18 }} />
+            </SendButton>
+          </InputArea>
+        </ChatArea>
+      ) : (
+        <EmptyChat>
+          <Typography sx={{ color: '#9B9BB4', fontSize: '0.85rem' }}>
+            Select a contact to start chatting
+          </Typography>
+        </EmptyChat>
+      )}
     </Container>
   )
 }
@@ -166,30 +201,175 @@ const ChatComponent: React.FC = () => {
 export default ChatComponent
 
 const Container = styled('div')`
-  position: relative;
-`
-
-const RegisterContainer = styled('div')`
-  //   position: fixed;
-  padding: 30px;
-  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
-  top: 35%;
-  left: 32%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  height: 400px;
+  border-radius: 12px;
+  overflow: hidden;
 `
 
-const ChatBox = styled('div')`
-  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
-  margin: 40px 50px;
-  height: 600px;
-  padding: 10px;
+const ContactList = styled('div')`
   display: flex;
-  flex-direction: row;
+  gap: 4px;
+  padding: 8px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid ${alpha('#6C63FF', 0.1)};
+  margin-bottom: 8px;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${alpha('#6C63FF', 0.2)};
+    border-radius: 2px;
+  }
 `
 
-const MemberList = styled('div')`
-  width: 20%;
+const ContactItem = styled('div')<{ selected?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  background: ${props => (props.selected ? alpha('#6C63FF', 0.15) : 'transparent')};
+  border: 1px solid ${props => (props.selected ? alpha('#6C63FF', 0.3) : 'transparent')};
+
+  &:hover {
+    background: ${alpha('#6C63FF', 0.08)};
+  }
+`
+
+const ContactAvatar = styled(Avatar)`
+  width: 28px;
+  height: 28px;
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, ${alpha('#6C63FF', 0.3)} 0%, ${alpha('#FF6B9D', 0.3)} 100%);
+  color: #E8E8F0;
+`
+
+const ContactName = styled(Typography)`
+  font-size: 0.8rem;
+  color: #E8E8F0;
+  font-weight: 500;
+`
+
+const ChatArea = styled('div')`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+`
+
+const ChatHeader = styled('div')`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid ${alpha('#6C63FF', 0.08)};
+  margin-bottom: 8px;
+`
+
+const StatusDot = styled('div')<{ connected: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${props => (props.connected ? '#00D68F' : '#FF4C6A')};
+  margin-left: auto;
+`
+
+const MessagesList = styled('div')`
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${alpha('#6C63FF', 0.2)};
+    border-radius: 2px;
+  }
+`
+
+const MessageBubble = styled('div')<{ isMine?: boolean }>`
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  align-self: ${props => (props.isMine ? 'flex-end' : 'flex-start')};
+  background: ${props =>
+    props.isMine
+      ? `linear-gradient(135deg, ${alpha('#6C63FF', 0.3)} 0%, ${alpha('#FF6B9D', 0.2)} 100%)`
+      : alpha('#131738', 0.8)};
+  border: 1px solid ${props =>
+    props.isMine ? alpha('#6C63FF', 0.2) : alpha('#6C63FF', 0.08)};
+`
+
+const MessageText = styled(Typography)`
+  color: #E8E8F0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  word-break: break-word;
+`
+
+const MessageTime = styled(Typography)`
+  color: #9B9BB4;
+  font-size: 0.65rem;
+  text-align: right;
+  margin-top: 2px;
+`
+
+const InputArea = styled('div')`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid ${alpha('#6C63FF', 0.08)};
+`
+
+const StyledInput = styled(TextField)`
+  .MuiOutlinedInput-root {
+    border-radius: 10px;
+    background: ${alpha('#6C63FF', 0.06)};
+    font-size: 0.85rem;
+    fieldset {
+      border-color: ${alpha('#6C63FF', 0.12)};
+    }
+    &:hover fieldset {
+      border-color: ${alpha('#6C63FF', 0.25)};
+    }
+  }
+`
+
+const SendButton = styled(IconButton)`
+  background: linear-gradient(135deg, #6C63FF 0%, #9D97FF 100%);
+  color: white;
+  width: 36px;
+  height: 36px;
+  &:hover {
+    background: linear-gradient(135deg, #7B73FF 0%, #ADA8FF 100%);
+    box-shadow: 0 4px 12px ${alpha('#6C63FF', 0.4)};
+  }
+  &:disabled {
+    background: ${alpha('#6C63FF', 0.2)};
+    color: ${alpha('#E8E8F0', 0.3)};
+  }
+`
+
+const EmptyChat = styled('div')`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const EmptyText = styled(Typography)`
+  color: #9B9BB4;
+  font-size: 0.8rem;
+  padding: 8px;
 `

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Autocomplete, Button, css, styled, Tab, Tabs, TextField, Typography } from '@mui/material'
+import { alpha, Autocomplete, Button, css, styled, Tab, Tabs, TextField, Typography } from '@mui/material'
 import { UserDto } from '../../types/User'
 import { SubmitHandler, useForm, FormProvider, useController } from 'react-hook-form'
 import { LoadingOverlay } from '../common/LoadingOverlay'
@@ -76,10 +76,8 @@ const ProfilePage: React.FC = () => {
   }, [])
 
   const handleSaveProfile: SubmitHandler<ProfileFormType> = formData => {
-    // IMPORTANT: Interest areas and fields that contain a list of strings should be handled here separately
-    // API call to '/users/profile'
-    const parsedCompletedStudies = formData['completedStudies']?.map(completedStudy => completedStudy.id) || []
-    const parsedInterestAreas = formData['interestAreas']?.map(interestArea => interestArea.id) || []
+    const parsedCompletedStudies = formData['completedStudies']?.map(s => s.id) || []
+    const parsedInterestAreas = formData['interestAreas']?.map(ia => ia.id) || []
     const parsedOngoingStudy = formData['ongoingStudy']?.id || undefined
     const parsedPassword = formData['password'] === '' ? undefined : formData['password']
 
@@ -286,57 +284,95 @@ const Container = styled('div')`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding: 24px;
 `
 
 const FormTitle = styled(Typography)`
-  font-weight: bold;
-  font-size: 24px;
-  margin: 0;
+  font-weight: 700;
+  font-size: 28px;
+  color: #E8E8F0;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
 `
 
 const FormSubtitle = styled(Typography)`
-  font-weight: bold;
-  margin-bottom: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #9D97FF;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
 `
 
 const FormWrapper = styled('form')`
-  padding: 20px;
-  width: 50%;
+  padding: 32px;
+  width: 55%;
+  background: ${alpha('#131738', 0.5)};
+  border: 1px solid ${alpha('#6C63FF', 0.1)};
+  border-radius: 24px;
+  backdrop-filter: blur(12px);
+
+  @media (max-width: 960px) {
+    width: 100%;
+  }
 `
 
 const FormSection = styled('div')`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin: 20px 0;
+  margin: 24px 0;
+  padding: 24px;
+  background: ${alpha('#6C63FF', 0.03)};
+  border-radius: 16px;
+  border: 1px solid ${alpha('#6C63FF', 0.06)};
 `
 
 const SaveButton = styled(Button)`
   color: white;
+  padding: 12px 32px;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, #6C63FF 0%, #FF6B9D 100%);
+  &:hover {
+    background: linear-gradient(135deg, #7B73FF 0%, #FF7DAD 100%);
+    box-shadow: 0 12px 30px -8px ${alpha('#6C63FF', 0.5)};
+  }
 `
 
 const PictureSection = styled('div')`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 8px;
 `
 
 const PictureSubtitle = styled(Typography)`
-  font-weight: bold;
+  font-weight: 500;
+  color: #9B9BB4;
+  font-size: 0.8rem;
 `
 
 const TabsWrapper = styled('div')`
   position: fixed;
-  right: 15%;
-  top: 90px;
+  right: 10%;
+  top: 100px;
+  background: ${alpha('#131738', 0.6)};
+  border: 1px solid ${alpha('#6C63FF', 0.1)};
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+
+  @media (max-width: 1200px) {
+    display: none;
+  }
 `
 
 const SectionTab = styled(Tab)`
+  color: #9B9BB4;
   ${props =>
     props['aria-selected'] &&
     css`
-      color: ${props.theme.palette.secondary.main} !important;
+      color: #6C63FF !important;
     `}
 `
 

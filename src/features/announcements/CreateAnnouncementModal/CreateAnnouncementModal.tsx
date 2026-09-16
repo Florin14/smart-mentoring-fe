@@ -1,4 +1,5 @@
 import {
+  alpha,
   Autocomplete,
   Button,
   Dialog,
@@ -226,43 +227,51 @@ export const CreateAnnouncementModal: React.FC<CreateAnnouncementModalProps> = (
 
 const FormWrapper = styled('form')`
   gap: 4px;
-  width: 500px;
+  width: 520px;
 `
 
 const StyledDialogTitle = styled(DialogTitle)`
-  background: #ddd;
+  background: linear-gradient(135deg, ${alpha('#6C63FF', 0.1)} 0%, ${alpha('#FF6B9D', 0.06)} 100%);
+  color: #E8E8F0;
+  font-weight: 700;
+  text-align: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid ${alpha('#6C63FF', 0.1)};
 `
 
 const StyledDialogContent = styled(DialogContent)`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 24px !important;
 `
 
 const DialogInstructions = styled(DialogContentText)`
-  margin-bottom: 15px;
+  margin-bottom: 8px;
+  color: #9B9BB4;
 `
 
 const InterestAreaWrapper = styled('div')`
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 40px;
+  grid-template-columns: 1fr 44px;
   align-items: center;
-  justify-content: center;
   gap: 10px;
 `
 
 const CreateInterestAreaButton = styled('div')`
-  // padding: 30px;
-  // width: 500px;
-  color: #f7941d;
-  border: 1px solid #f7941d;
-  border-radius: 4px;
+  color: #9D97FF;
+  border: 1px dashed ${alpha('#6C63FF', 0.4)};
+  border-radius: 12px;
   display: flex;
-  height: 100%;
+  height: 40px;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  // gap: 5px;
-  font-size: 10px;
+  transition: all 0.2s ease;
+  &:hover {
+    border-color: #6C63FF;
+    background: ${alpha('#6C63FF', 0.08)};
+    color: #6C63FF;
+  }
 `

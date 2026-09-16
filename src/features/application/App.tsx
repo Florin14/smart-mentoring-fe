@@ -17,13 +17,18 @@ const ProfilePage = React.lazy(() => import('../account/ProfilePage'))
 const AssignmentsPage = React.lazy(() => import('../assignments/AssignmentsPage'))
 const AnnouncementsPage = React.lazy(() => import('../announcements/AnnouncementsPage'))
 const AppointmentsPage = React.lazy(() => import('../appointments/AppointmentsPage'))
-// const ChatPage = React.lazy(() => import('../chat/ChatPage'))
-
+const MentorMatchingPage = React.lazy(() => import('../mentor-matching/MentorMatchingPage'))
+const ChatPage = React.lazy(() => import('../chat/ChatPage'))
+const DashboardPage = React.lazy(() => import('../dashboard/DashboardPage'))
 
 const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
+      {
+        path: paths.DASHBOARD,
+        element: <DashboardPage />,
+      },
       {
         path: paths.PROFILE,
         element: <ProfilePage />,
@@ -40,10 +45,14 @@ const router = createBrowserRouter([
         path: paths.APPOINTMENTS,
         element: <AppointmentsPage />,
       },
-      // {
-      //   path: paths.CHAT,
-      //   element: <ChatPage />,
-      // },
+      {
+        path: paths.MENTOR_MATCHING,
+        element: <MentorMatchingPage />,
+      },
+      {
+        path: paths.CHAT,
+        element: <ChatPage />,
+      },
       {
         path: paths.LOGOUT,
         element: <LogoutRedirect redirectAfterLogoutTo={paths.LANDING_PAGE} />,
@@ -53,7 +62,7 @@ const router = createBrowserRouter([
   {
     path: paths.LANDING_PAGE,
     element: (
-      <AlreadyAuth redirectTo={paths.PROFILE}>
+      <AlreadyAuth redirectTo={paths.DASHBOARD}>
         <LoadingScreen>
           <WelcomePage />
         </LoadingScreen>
